@@ -3,6 +3,7 @@ import type { BrowserAgentInterface } from '@knowlearning/agents';
 import ToggleButton from './ToggleButton.vue';
 import { computed, inject, ref } from 'vue';
 import { computedAsync } from '@vueuse/core';
+import StudentView from './StudentView.vue';
 
 // Student UUIDs are passed as props
 const props = defineProps<{ studentIds: string[] }>();
@@ -48,7 +49,7 @@ function selectStudent(index: number) {
       </ToggleButton>
     </div>
     <h2>Competences for {{ activeName }}</h2>
-    <div>{{ activeId }}</div>
+    <StudentView :id="activeId ?? ''" />
   </div>
 </template>
 
