@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@babel/types": "^7.24.0",
     "@knowlearning/agents": "^0.9.136",
     "@vueuse/core": "^10.9.0",
     "vue": "^3.4.21"
