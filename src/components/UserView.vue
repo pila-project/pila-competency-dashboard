@@ -85,10 +85,11 @@ const userSkills = () => {
 <style scoped>
 table {
   margin: 0px;
-	max-width: 100%;
-	max-height: 100%;
-	overflow: auto;
-	border-spacing: 0px;
+  max-width: 100%;
+  max-height: 100%;
+  overflow: auto;
+  border-spacing: 0px;
+  position: relative;
   display: block;
   padding-bottom: 16px;
 }
@@ -104,18 +105,16 @@ table >>> tr:first-child {
   position: sticky;
   top: 0px;
   background-color: white;
-  z-index: 1;
+  z-index: 2;
 }
 table >>> tr:nth-child(2) {
   position: sticky;
+  top: 21px; /* this needs to be tuned manually, and for that a specific font must be chosen */
   background-color: white;
-  z-index: 1;
+  z-index: 2;
 }
 table >>> tr:nth-child(2) > th:first-child {
   z-index: 1;
-}
-table >>> tr:first-child > th {
-  padding-top: 16px;
 }
 table >>> tr > *:first-child {
   padding-left: 16px;

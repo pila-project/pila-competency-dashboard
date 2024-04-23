@@ -60,6 +60,7 @@ div.dashboard {
   display: flex;
   flex-direction: column;
   align-items: center;
+  max-height: 100vh;
 }
 div.students {
   display: flex;
