@@ -6,6 +6,7 @@ import { h } from 'vue'
 
 // student UUID is passed as a prop
 const props = defineProps<{ id: string, games: string[] }>();
+const domain = (location.hostname === "localhost" || location.hostname === "127.0.0.1") ? 'localhost:8080' : undefined;
 
 // Fetch the competency state
 type ReportData = Record<string, [number, number]>;
@@ -13,7 +14,7 @@ const competencyState = computedAsync(
   async () => {
     if (props.id !== '') {
       return Promise.all(props.games.map(async (game) => {
-        const state = await klBrowserAgent.state(`pila/competencies/${game}`, props.id);
+        const state = await klBrowserAgent.state(`pila/competencies/${game}`, props.id, domain);
         console.debug('Loaded competency state:', props.id, game, state);
         return [game, state] as [string, ReportData];
       }));

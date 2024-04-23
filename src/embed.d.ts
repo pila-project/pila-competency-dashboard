@@ -17,7 +17,7 @@ declare module '@knowlearning/agents/browser.js' {
 	export interface BrowserAgentInterface {
 		close(): void;
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		state(ns?: string, user?: string): any;
+		state(ns?: string, user?: string, domain?: string): any;
 		reset(ns: string): Promise<void>;
 		synced(): Promise<void>;
 		environment(userId?: string): Promise<BrowserAgentEnvironment>;
