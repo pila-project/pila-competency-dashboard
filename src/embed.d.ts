@@ -1,4 +1,4 @@
-declare module '@knowlearning/agents' {
+declare module '@knowlearning/agents/browser.js' {
 	export interface BrowserAgentAuthInfo {
 		name?: string;
 	}
@@ -23,5 +23,6 @@ declare module '@knowlearning/agents' {
 		environment(userId?: string): Promise<BrowserAgentEnvironment>;
 	}
 
-	export function browserAgent(): BrowserAgentInterface;
+	const browserAgent: BrowserAgentInterface;
+	export default browserAgent;
 }

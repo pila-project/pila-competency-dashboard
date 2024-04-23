@@ -1,19 +1,19 @@
 <script setup lang="ts">
-import type { BrowserAgentInterface } from '@knowlearning/agents';
 import ToggleButton from './ToggleButton.vue';
-import { computed, inject, ref } from 'vue';
+import { computed, ref } from 'vue';
 import { computedAsync } from '@vueuse/core';
 import StudentView from './StudentView.vue';
+import klBrowserAgent from '@knowlearning/agents/browser.js';
 
 // Student UUIDs are passed as props
-const props = defineProps<{ studentIds: string[] }>();
+const props = defineProps<{ users: string[] }>();
 
 // Fetch students from the KL API
-const klAgent = inject('klAgent') as BrowserAgentInterface;
 const students = computedAsync(
   async () => {
-    return Promise.all(props.studentIds.map(async (uuid) => {
-      const userEnv = await klAgent.environment(uuid);
+    return Promise.all(props.users.map(async (uuid) => {
+      const userEnv = await klBrowserAgent.environment(uuid);
+      console.debug('Environment for', uuid, userEnv);
       return {
         name: userEnv?.auth?.info?.name ?? `Anonymous_${uuid.slice(0,4)}`,
         id: uuid,
