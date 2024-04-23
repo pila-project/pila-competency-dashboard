@@ -2,7 +2,7 @@
 import ToggleButton from './ToggleButton.vue';
 import { computed, ref } from 'vue';
 import { computedAsync } from '@vueuse/core';
-import StudentView from './StudentView.vue';
+import UserView from './UserView.vue';
 import klBrowserAgent from '@knowlearning/agents/browser.js';
 
 // Student UUIDs are passed as props
@@ -22,7 +22,6 @@ const students = computedAsync(
   },
   []
 );
-// const items = ref([{ name: 'Charles', id: 'oeuou' }, { name: 'Albert', id: 'ttut' }]);
 
 // Active student index
 const activeIndex = ref(0);
@@ -49,7 +48,10 @@ function selectStudent(index: number) {
       </ToggleButton>
     </div>
     <h2>Competences for {{ activeName }}</h2>
-    <StudentView :id="activeId ?? ''" />
+    <UserView
+      :id="activeId ?? ''"
+      :games="['c8c710aa7fee5af189791f64fc8270d6']"
+    />
   </div>
 </template>
 
