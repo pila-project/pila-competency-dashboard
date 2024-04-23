@@ -52,11 +52,11 @@ const userSkills = () => {
   // Generate HTML table
   const header = h('tr', [
     h('th', 'Game'),
-    ...Array.from(skills).map(([ns, skills]) => h('th', { colSpan: skills.size }, ns))
+    ...Array.from(skills).map(([ns, skills]) => h('th', { colSpan: skills.size, class: 'skill-section' }, ns))
   ]);
   const subHeader = h('tr', [
     h('th', ''),
-    ...Array.from(skills.values()).map(skills => Array.from(skills).map(skill => h('td', skill)))
+    ...Array.from(skills.values()).map(skills => Array.from(skills).map(skill => h('td', { class: 'skill-name' }, skill)))
   ]);
   const content = data.map(
     ([game, data]) => h('tr', [
@@ -81,3 +81,54 @@ const userSkills = () => {
 <template>
   <userSkills />
 </template>
+
+<style scoped>
+table {
+  margin: 0px;
+	max-width: 100%;
+	max-height: 100%;
+	overflow: auto;
+	border-spacing: 0px;
+  display: block;
+  padding-bottom: 16px;
+}
+table >>> td {
+  display: table-cell;
+  text-align: center;
+  padding-left: 16px;
+}
+table >>> tr:last-child {
+  padding-bottom: 16px;
+}
+table >>> tr:first-child {
+  position: sticky;
+  top: 0px;
+  background-color: white;
+  z-index: 1;
+}
+table >>> tr:nth-child(2) {
+  position: sticky;
+  background-color: white;
+  z-index: 1;
+}
+table >>> tr:nth-child(2) > th:first-child {
+  z-index: 1;
+}
+table >>> tr:first-child > th {
+  padding-top: 16px;
+}
+table >>> tr > *:first-child {
+  padding-left: 16px;
+}
+table >>> tr > *:last-child {
+  padding-right: 16px; /* 88px for rotated headers */
+}
+table >>> tr > th:first-child {
+  position: sticky;
+  left: 0px;
+  padding-right: 16px;
+  background-color: white;
+  border-right: 1px solid gray;
+}
+
+</style>

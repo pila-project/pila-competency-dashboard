@@ -60,7 +60,6 @@ div.dashboard {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 8px;
 }
 div.students {
   display: flex;
@@ -69,6 +68,7 @@ div.students {
   gap: 8px;
 }
 h2 {
+  text-align: center;
   margin: 16px 0;
 }
 </style>
