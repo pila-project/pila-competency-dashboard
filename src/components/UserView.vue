@@ -94,36 +94,36 @@ table {
   display: block;
   padding-bottom: 16px;
 }
-table >>> td {
+table :deep(td) {
   display: table-cell;
   text-align: center;
   padding-left: 16px;
 }
-table >>> tr:last-child {
+table :deep(tr:last-child) {
   padding-bottom: 16px;
 }
-table >>> tr:first-child {
+table :deep(tr:first-child) {
   position: sticky;
   top: 0px;
   background-color: white;
   z-index: 2;
 }
-table >>> tr:nth-child(2) {
+table :deep(tr:nth-child(2)) {
   position: sticky;
   top: 21px; /* this needs to be tuned manually, and for that a specific font must be chosen */
   background-color: white;
   z-index: 2;
 }
-table >>> tr:nth-child(2) > th:first-child {
+table :deep(tr:nth-child(2)) > th:first-child {
   z-index: 1;
 }
-table >>> tr > *:first-child {
+table :deep(tr) > *:first-child {
   padding-left: 16px;
 }
-table >>> tr > *:last-child {
+table :deep(tr) > *:last-child {
   padding-right: 16px; /* 88px for rotated headers */
 }
-table >>> tr > th:first-child {
+table :deep(tr) > th:first-child {
   position: sticky;
   left: 0px;
   padding-right: 16px;
