@@ -19,7 +19,10 @@ if (games.length === 0) {
 </script>
 
 <template>
-  <DashBoard :users :games/>
+  <DashBoard
+    :users
+    :games
+  />
 </template>
 
 <style scoped>

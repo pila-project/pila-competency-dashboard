@@ -3,6 +3,7 @@ import klBrowserAgent from '@knowlearning/agents/browser.js';
 import { computedAsync } from '@vueuse/core';
 import { defined } from '../types';
 import { h } from 'vue'
+import { moveElementToFront } from '../array';
 
 // student UUID is passed as a prop
 const props = defineProps<{ id: string, games: string[] }>();
@@ -65,24 +66,31 @@ const userSkills = () => {
     return [game, data] as [string, Map<string, [number, number]>];
   });
 
+  // We want the general category first
+  const skillArray = moveElementToFront(Array.from(skills), ([ns, _]) => ns === 'general');
+
   // Generate HTML table
   const header = h('tr', [
     h('th', 'Game'),
-    ...Array.from(skills).map(([ns, skills]) => h('th', { colSpan: skills.size, class: 'skill-section' }, ns))
+    ...skillArray.map(([ns, skills]) => h('th', { colSpan: skills.size, class: 'skill-section' }, ns))
   ]);
   const subHeader = h('tr', [
     h('th', ''),
-    ...Array.from(skills.values()).map(skills => Array.from(skills).map(skill => h('td', { class: 'skill-name' }, skill)))
+    ...skillArray.flatMap(([_, skills]) => Array.from(skills).map(skill => h('td', { class: 'skill-name' }, skill)))
   ]);
   const content = data.map(
     ([game, data]) => h('tr', [
       h('th', game),
-      ...Array.from(skills).flatMap(([ns, skills]) => {
+      ...skillArray.flatMap(([ns, skills]) => {
         return Array.from(skills).map(skill => {
           const key = `${ns}:${skill}`;
           const value = data.get(key);
           if (value !== undefined) {
-            return h('td', `${value[0]}/${value[1]}`);
+            if (ns === 'general') {
+              return h('td', `${value[0]}`);
+            } else {
+              return h('td', `${value[0]}/${value[1]}`);
+            }
           } else {
             return h('td', 'not started');
           }
@@ -114,6 +122,9 @@ table :deep(td) {
   text-align: center;
   padding-left: 16px;
 }
+table :deep(th) {
+  padding-left: 16px;
+}
 table :deep(tr:last-child) {
   padding-bottom: 16px;
 }
@@ -134,9 +145,6 @@ table :deep(tr:nth-child(2)) td {
 }
 table :deep(tr:nth-child(2)) > th:first-child {
   z-index: 1;
-}
-table :deep(tr) > *:first-child {
-  padding-left: 16px;
 }
 table :deep(tr) > *:last-child {
   padding-right: 16px; /* 88px for rotated headers */
