@@ -6,7 +6,7 @@ import UserView from './UserView.vue';
 import klBrowserAgent from '@knowlearning/agents/browser.js';
 
 // Student UUIDs are passed as props
-const props = defineProps<{ users: string[] }>();
+const props = defineProps<{ users: string[], games: string[] }>();
 
 // Fetch students from the KL API
 const students = computedAsync(
@@ -50,7 +50,7 @@ function selectStudent(index: number) {
     <h2>Competences for {{ activeName }}</h2>
     <UserView
       :id="activeId ?? ''"
-      :games="['c8c710aa7fee5af189791f64fc8270d6']"
+      :games
     />
   </div>
 </template>
