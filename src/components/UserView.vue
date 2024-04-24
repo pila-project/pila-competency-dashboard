@@ -125,7 +125,7 @@ table :deep(tr:first-child) {
 }
 table :deep(tr:nth-child(2)) {
   position: sticky;
-  top: 21px; /* this needs to be tuned manually, and for that a specific font must be chosen */
+  top: 23px; /* this needs to be tuned manually, and for that a specific font must be chosen */
   background-color: white;
   z-index: 2;
 }
@@ -147,6 +147,7 @@ table :deep(tr) > th:first-child {
   padding-right: 16px;
   background-color: white;
   border-right: 1px solid gray;
+  text-align: right;
 }
 
 </style>
