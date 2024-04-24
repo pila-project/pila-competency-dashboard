@@ -15,8 +15,16 @@ const competencyState = computedAsync(
     if (props.id !== '') {
       return Promise.all(props.games.map(async (game) => {
         const state = await klBrowserAgent.state(`pila/competencies/${game}`, props.id, domain);
-        console.debug('Loaded competency state:', props.id, game, state);
-        return [game, state] as [string, ReportData];
+        let gameName = game;
+        try {
+          const url = `https://cand.li/api/v0/gameNames/${game}`;
+          // const url = `https://localhost:8080/api/v0/gameNames/${game}`;
+          gameName = await (await fetch(url)).text();
+        } catch (e) {
+          console.error('Failed to fetch game name:', e);
+        }
+        console.debug('Loaded competency state:', props.id, game, gameName, state);
+        return [gameName, state] as [string, ReportData];
       }));
     } else {
       console.debug('Empty user id, skipping competency state fetch, using placeholder data.');
