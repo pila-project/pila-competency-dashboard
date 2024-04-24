@@ -129,6 +129,9 @@ table :deep(tr:nth-child(2)) {
   background-color: white;
   z-index: 2;
 }
+table :deep(tr:nth-child(2)) td {
+  padding-bottom: 8px;
+}
 table :deep(tr:nth-child(2)) > th:first-child {
   z-index: 1;
 }
