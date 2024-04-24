@@ -6,7 +6,13 @@ import { h } from 'vue'
 
 // student UUID is passed as a prop
 const props = defineProps<{ id: string, games: string[] }>();
-const domain = (location.hostname === "localhost" || location.hostname === "127.0.0.1") ? 'localhost:8080' : undefined;
+
+// Get the domain name override for accessing user data
+const urlParams = new URLSearchParams(window.location.search);
+const domainFromUrl = urlParams.get('domain');
+const isLocalHost = location.hostname === "localhost" || location.hostname === "127.0.0.1";
+const domain = domainFromUrl ?? (isLocalHost ? 'localhost:8080' : undefined);
+console.debug('Using domain for user data:', domain);
 
 // Fetch the competency state
 type ReportData = Record<string, [number, number]>;
@@ -17,8 +23,9 @@ const competencyState = computedAsync(
         const state = await klBrowserAgent.state(`pila/competencies/${game}`, props.id, domain);
         let gameName = game;
         try {
-          const url = `https://cand.li/api/v0/gameNames/${game}`;
-          // const url = `https://localhost:8080/api/v0/gameNames/${game}`;
+          const url = isLocalHost ?
+            `https://localhost:8080/api/v0/gameNames/${game}` :
+            `https://cand.li/api/v0/gameNames/${game}`;
           gameName = await (await fetch(url)).text();
         } catch (e) {
           console.error('Failed to fetch game name:', e);
