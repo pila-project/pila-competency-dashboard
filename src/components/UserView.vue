@@ -1,8 +1,9 @@
 <script setup lang="ts">
+import SuccessBox from './SuccessBox.vue';
 import klBrowserAgent from '@knowlearning/agents/browser.js';
 import { computedAsync } from '@vueuse/core';
 import { defined } from '../types';
-import { h } from 'vue'
+import { computed, h } from 'vue'
 import { moveElementToFront } from '../array';
 
 // student UUID is passed as a prop
@@ -46,6 +47,30 @@ const competencyState = computedAsync(
   },
   [] // Initial value
 );
+
+// Statistics per category
+const categoryStats = computed(() => {
+  const stats = new Map<string, [number, number]>();
+  for (const [_, state] of competencyState.value) {
+    for (const [key, value] of Object.entries(state)) {
+      const parts = key.split(':');
+      const category = defined(parts[0]);
+      if (category === 'general') {
+        continue;
+      }
+      const [completed, total] = value;
+      const [prevCompleted, prevTotal] = stats.get(category) ?? [0, 0];
+      stats.set(category, [prevCompleted + completed, prevTotal + total]);
+    }
+  }
+  return Array.from(stats).map(([category, [completed, total]]) => {
+    if (total !== 0) {
+      return [category, completed / total] as [string, number];
+    } else {
+      return [category, 0] as [string, number];
+    }
+  });
+});
 
 // Render function
 const userSkills = () => {
@@ -103,10 +128,26 @@ const userSkills = () => {
 </script>
 
 <template>
+  <div class="success-boxes">
+    <SuccessBox
+      v-for="([category, completion]) in categoryStats"
+      :key="category"
+      :completion="completion"
+    >
+      {{ category }}
+    </SuccessBox>
+  </div>
   <userSkills />
 </template>
 
 <style scoped>
+.success-boxes {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-bottom: 8px;
+}
 table {
   margin: 0px;
   max-width: 100%;

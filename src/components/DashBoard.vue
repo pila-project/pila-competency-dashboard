@@ -8,8 +8,8 @@ import klBrowserAgent from '@knowlearning/agents/browser.js';
 // Student UUIDs are passed as props
 const props = defineProps<{ users: string[], games: string[] }>();
 
-// Fetch students from the KL API
-const students = computedAsync(
+// Fetch users from the KL API
+const users = computedAsync(
   async () => {
     return Promise.all(props.users.map(async (uuid) => {
       const userEnv = await klBrowserAgent.environment(uuid);
@@ -27,8 +27,8 @@ const students = computedAsync(
 const activeIndex = ref(0);
 
 // Derived properties
-const activeId = computed(() => students.value[activeIndex.value]?.id);
-const activeName = computed(() => students.value[activeIndex.value]?.name);
+const activeId = computed(() => users.value[activeIndex.value]?.id);
+const activeName = computed(() => users.value[activeIndex.value]?.name);
 
 function selectStudent(index: number) {
   activeIndex.value = index;
@@ -37,9 +37,9 @@ function selectStudent(index: number) {
 
 <template>
   <div class="dashboard">
-    <div class="students">
+    <div class="users">
       <ToggleButton
-        v-for="(student, index) in students"
+        v-for="(student, index) in users"
         :key="student.id"
         :active="index === activeIndex"
         @click="selectStudent(index)"
@@ -62,7 +62,7 @@ div.dashboard {
   align-items: center;
   max-height: 100vh;
 }
-div.students {
+div.users {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
