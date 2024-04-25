@@ -10,11 +10,12 @@ const showStars = computed(() => [
   props.completion >= 0.7,
   props.completion >= 0.85
 ]);
+const percentage = computed(() => Math.round(props.completion * 100));
 </script>
 
 <template>
   <div>
-    <span><img v-for="star in showStars" :src="star ? solidStar : regularStar" :class="star ? 'activeStar' : 'inactiveStar'"/></span>
+    <span><img v-for="star in showStars" :src="star ? solidStar : regularStar" :class="star ? 'activeStar' : 'inactiveStar'"/><span class="percentage">{{ percentage }} %</span></span>
     <span class="title"><slot /></span>
   </div>
 </template>
@@ -33,15 +34,23 @@ img {
   width: 24px;
   height: 24px;
   padding: 0 4px;
+  vertical-align: middle;
 }
 .title {
   font-weight: bold;
   padding: 0 4px;
+  margin-top: 8px;
 }
 .activeStar {
   filter: invert(83%) sepia(35%) saturate(4226%) hue-rotate(358deg) brightness(109%) contrast(110%);
 }
 .inactiveStar {
   filter: invert(49%) sepia(2%) saturate(9%) hue-rotate(359deg) brightness(103%) contrast(92%);
+}
+.percentage {
+  display: inline;
+  vertical-align: middle;
+  padding-left: 4px;
+  font-weight: bold;
 }
 </style>
