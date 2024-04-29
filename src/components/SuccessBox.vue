@@ -15,7 +15,12 @@ const percentage = computed(() => Math.round(props.completion * 100));
 
 <template>
   <div>
-    <span><img v-for="star in showStars" :src="star ? solidStar : regularStar" :class="star ? 'activeStar' : 'inactiveStar'"/><span class="percentage">{{ percentage }} %</span></span>
+    <span><img
+      v-for="(star, index) in showStars"
+      :key="index"
+      :src="star ? solidStar : regularStar"
+      :class="star ? 'activeStar' : 'inactiveStar'"
+    ><span class="percentage">{{ percentage }} %</span></span>
     <span class="title"><slot /></span>
   </div>
 </template>
