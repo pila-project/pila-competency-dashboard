@@ -115,7 +115,11 @@ const userSkills = () => {
               return h('td', `${value[0]}/${value[1]}`);
             }
           } else {
-            return h('td', 'not started');
+            if (ns === 'general') {
+              return h('td', 'not started');
+            } else {
+              return h('td', '');
+            }
           }
         })
       })
