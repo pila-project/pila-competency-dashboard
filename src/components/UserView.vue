@@ -39,11 +39,6 @@ const gameNames = computedAsync(
 type ReportData = Record<string, [number, number]>;
 const competencyState = reactive(props.games.map(_ => ({} as ReportData)));
 props.games.forEach( (game, index) => {
-  // FIXME: without this call watch doesn't see anything
-  void (async () => {
-    const state = await klBrowserAgent.state(`pila/competencies/${game}`, props.id, domain);
-    console.debug('Received competency state for game (using state):', props.id, game, state);
-  })();
   klBrowserAgent.watch(`pila/competencies/${game}`, ({ state }) => {
     console.debug('Received competency state for game (using watch):', props.id, game, state);
     competencyState[index] = state as ReportData;
