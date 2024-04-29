@@ -3,8 +3,8 @@ import SuccessBox from './SuccessBox.vue';
 import klBrowserAgent from '@knowlearning/agents/browser.js';
 import { computedAsync } from '@vueuse/core';
 import { defined } from '../types';
-import { computed, h } from 'vue'
-import { moveElementToFront } from '../array';
+import { computed, h, reactive } from 'vue'
+import { moveElementToFront, zip } from '../array';
 
 // student UUID is passed as a prop
 const props = defineProps<{ id: string, games: string[] }>();
@@ -16,42 +16,44 @@ const isLocalHost = location.hostname === "localhost" || location.hostname === "
 const domain = domainFromUrl ?? (isLocalHost ? 'localhost:8080' : undefined);
 console.debug('Using domain for user data:', domain);
 
-// Fetch the competency state
-type ReportData = Record<string, [number, number]>;
-const competencyState = computedAsync(
+// Setup game names fetching
+const gameNames = computedAsync(
   async () => {
-    if (props.id !== '') {
-      return Promise.all(props.games.map(async (game) => {
-        const state = await klBrowserAgent.state(`pila/competencies/${game}`, props.id, domain);
-        let gameName = game;
-        try {
-          const url = isLocalHost ?
-            `https://localhost:8080/api/v0/gameNames/${game}` :
-            `https://cand.li/api/v0/gameNames/${game}`;
-          gameName = await (await fetch(url)).text();
-        } catch (e) {
-          console.error('Failed to fetch game name:', e);
-        }
-        console.debug('Loaded competency state:', props.id, game, gameName, state);
-        return [gameName, state] as [string, ReportData];
-      }));
-    } else {
-      console.debug('Empty user id, skipping competency state fetch, using placeholder data.');
-      const testState = {
-        "math:addition": [1, 1] as [number, number],
-        "math:subtraction": [1, 1] as [number, number],
-        "math:comparison": [1, 1] as [number, number]
-      };
-      return props.games.map(game => [game, testState] as [string, ReportData]);
-    }
+    return Promise.all(props.games.map(async (game) => {
+      let gameName = game;
+      try {
+        const url = isLocalHost ?
+          `https://localhost:8080/api/v0/gameNames/${game}` :
+          `https://cand.li/api/v0/gameNames/${game}`;
+        gameName = await (await fetch(url)).text();
+      } catch (e) {
+        console.error('Failed to fetch game name:', e);
+      }
+      return gameName;
+    }));
   },
-  [] // Initial value
+  props.games
 );
+
+// Setup game state fetching
+type ReportData = Record<string, [number, number]>;
+const competencyState = reactive(props.games.map(_ => ({} as ReportData)));
+props.games.forEach( (game, index) => {
+  // FIXME: without this call watch doesn't see anything
+  void (async () => {
+    const state = await klBrowserAgent.state(`pila/competencies/${game}`, props.id, domain);
+    console.debug('Received competency state for game (using state):', props.id, game, state);
+  })();
+  klBrowserAgent.watch(`pila/competencies/${game}`, ({ state }) => {
+    console.debug('Received competency state for game (using watch):', props.id, game, state);
+    competencyState[index] = state as ReportData;
+  }, props.id, domain)
+});
 
 // Statistics per category
 const categoryStats = computed(() => {
   const stats = new Map<string, [number, number]>();
-  for (const [_, state] of competencyState.value) {
+  for (const state of competencyState) {
     for (const [key, value] of Object.entries(state)) {
       const parts = key.split(':');
       const category = defined(parts[0]);
@@ -77,7 +79,8 @@ const userSkills = () => {
   // Parse data
   type SectionedSkills = Map<string, Set<string>>;
   const skills: SectionedSkills = new Map();
-  const data = competencyState.value.map(([game, state]) => {
+  const zipped = zip(gameNames.value, competencyState);
+  const data = zipped.map(([game, state]) => {
     const data = new Map<string, [number, number]>();
     for (const [key, value] of Object.entries(state)) {
       // Parse key and store skill
