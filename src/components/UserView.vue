@@ -152,6 +152,7 @@ const userSkills = () => {
 }
 table {
   margin: 0px;
+  margin-top: 16px;
   max-width: 100%;
   max-height: 100%;
   overflow: auto;
