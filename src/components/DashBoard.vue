@@ -47,7 +47,7 @@ function selectStudent(index: number) {
         {{ student.name }}
       </ToggleButton>
     </div>
-    <h2>Competences for {{ activeName }}</h2>
+    <h2>Competencies of {{ activeName }}</h2>
     <UserView
       v-if="activeId"
       :id="activeId"
@@ -68,6 +68,7 @@ div.users {
   flex-direction: row;
   flex-wrap: wrap;
   gap: 8px;
+  margin-top: 8px;
 }
 h2 {
   text-align: center;
