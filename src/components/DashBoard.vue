@@ -50,6 +50,7 @@ function selectStudent(index: number) {
     <h2>Competencies of {{ activeName }}</h2>
     <UserView
       v-if="activeId"
+      :key="activeId"
       :id="activeId"
       :games
     />
