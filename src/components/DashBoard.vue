@@ -47,7 +47,7 @@ function selectStudent(index: number) {
         {{ student.name }}
       </ToggleButton>
     </div>
-    <h2>Competencies of {{ activeName }}</h2>
+    <h2>{{ activeName }}</h2>
     <UserView
       v-if="activeId"
       :key="activeId"

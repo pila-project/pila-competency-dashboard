@@ -5,6 +5,7 @@ import { computedAsync } from '@vueuse/core';
 import { defined } from '../types';
 import { computed, h, reactive } from 'vue'
 import { moveElementToFront, zip } from '../array';
+import translate from '../translations/translate.js'
 
 // student UUID is passed as a prop
 const props = defineProps<{ id: string, games: string[] }>();
@@ -94,12 +95,12 @@ const userSkills = () => {
 
   // Generate HTML table
   const header = h('tr', [
-    h('th', 'Game'),
-    ...skillArray.map(([ns, skills]) => h('th', { colSpan: skills.size, class: 'skill-section' }, ns))
+    h('th', translate('Game')),
+    ...skillArray.map(([ns, skills]) => h('th', { colSpan: skills.size, class: 'skill-section' }, translate(ns)))
   ]);
   const subHeader = h('tr', [
     h('th', ''),
-    ...skillArray.flatMap(([_, skills]) => Array.from(skills).map(skill => h('td', { class: 'skill-name' }, skill)))
+    ...skillArray.flatMap(([_, skills]) => Array.from(skills).map(skill => h('td', { class: 'skill-name' }, translate(skill))))
   ]);
   const content = data.map(
     ([game, data]) => h('tr', [
@@ -118,7 +119,7 @@ const userSkills = () => {
             if (ns === 'general') {
               return h('td', 'not started');
             } else {
-              return h('td', '');
+              return h('td', '-');
             }
           }
         })
