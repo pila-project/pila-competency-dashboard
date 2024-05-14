@@ -50,7 +50,8 @@ const translations: { [key: string]: string } =  {
   "general": "ทั่วไป",
   "attempts": "ลองใหม่",
   "not started": "ยังไม่ได้เริ่ม",
-  "game": "เกม"
+  "game": "เกม",
+  "test": "ทดสอบ"
 }
 
 export default translations;
