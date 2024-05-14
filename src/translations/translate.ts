@@ -7,7 +7,7 @@ function matchNavigatorLanguage(incomingChoices: string[]): string {
     return firstMatch ? firstMatch : 'en';
 }
 
-export default function translate(sourceString: string): string {
+export default function translate(sourceString: string): string | undefined {
   const navigatorLanguage = matchNavigatorLanguage(['en', 'th']);
   if (navigatorLanguage === 'th' && th[sourceString.toLowerCase()]) {
     return th[sourceString.toLowerCase()];
