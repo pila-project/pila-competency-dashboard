@@ -1,4 +1,4 @@
-export default {
+const translations: { [key: string]: string } =  {
   "explore environment": "สำรวจสิ่งแวดล้อม",
   "choose strategy": "เลือกกลวิธี",
   "justify": "ให้เหตุผลสนับสนุน",
@@ -52,3 +52,5 @@ export default {
   "not started": "ยังไม่ได้เริ่ม",
   "game": "เกม"
 }
+
+export default translations;
