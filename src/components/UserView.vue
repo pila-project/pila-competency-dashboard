@@ -117,7 +117,7 @@ const userSkills = () => {
             }
           } else {
             if (ns === 'general') {
-              return h('td', 'not started');
+              return h('td', translate('not started'));
             } else {
               return h('td', '-');
             }
@@ -137,7 +137,7 @@ const userSkills = () => {
       :key="category"
       :completion="completion"
     >
-      {{ category }}
+      {{ translate(category) }}
     </SuccessBox>
   </div>
   <userSkills />
