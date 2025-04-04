@@ -50,8 +50,8 @@ function selectStudent(index: number) {
     <h2>{{ activeName }}</h2>
     <UserView
       v-if="activeId"
-      :key="activeId"
       :id="activeId"
+      :key="activeId"
       :games
     />
   </div>
