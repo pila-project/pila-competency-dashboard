@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import ToggleButton from './ToggleButton.vue';
+// import ToggleButton from './ToggleButton.vue';
+import DropDownList from './DropDownList.vue';
 import { computed, ref } from 'vue';
 import { computedAsync } from '@vueuse/core';
 import UserView from './UserView.vue';
 import klBrowserAgent from '@knowlearning/agents/browser.js';
+import translate from '../translations/translate.ts';
 
 // Student UUIDs are passed as props
 const props = defineProps<{ users: string[], games: string[] }>();
@@ -22,22 +24,30 @@ const users = computedAsync(
   },
   []
 );
+const userNames = computed(() => users.value.map(user => user.name));
 
 // Active student index
 const activeIndex = ref(0);
 
 // Derived properties
 const activeId = computed(() => users.value[activeIndex.value]?.id);
-const activeName = computed(() => users.value[activeIndex.value]?.name);
+/*const activeName = computed(() => users.value[activeIndex.value]?.name);
 
 function selectStudent(index: number) {
   activeIndex.value = index;
-}
+}*/
+
+const studentLabel = translate('Student');
 </script>
 
 <template>
   <div class="dashboard">
-    <div class="users">
+    <DropDownList
+      v-model="activeIndex"
+      :options="userNames"
+      :label="studentLabel"
+    />
+    <!--<div class="users">
       <ToggleButton
         v-for="(student, index) in users"
         :key="student.id"
@@ -47,7 +57,7 @@ function selectStudent(index: number) {
         {{ student.name }}
       </ToggleButton>
     </div>
-    <h2>{{ activeName }}</h2>
+    <h2>{{ activeName }}</h2>-->
     <UserView
       v-if="activeId"
       :id="activeId"

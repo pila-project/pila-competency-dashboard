@@ -3,9 +3,9 @@
 import klBrowserAgent from '@knowlearning/agents/browser.js';
 import { computedAsync } from '@vueuse/core';
 import { defined } from '../types';
-import { h, reactive } from 'vue'
+import { h, reactive } from 'vue';
 import { moveElementToFront, zip } from '../array';
-import translate from '../translations/translate.ts'
+import translate from '../translations/translate.ts';
 
 // student UUID is passed as a prop
 const props = defineProps<{ id: string, games: string[] }>();
