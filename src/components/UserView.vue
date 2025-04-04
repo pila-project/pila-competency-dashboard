@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import SuccessBox from './SuccessBox.vue';
+// import SuccessBox from './SuccessBox.vue';
 import klBrowserAgent from '@knowlearning/agents/browser.js';
 import { computedAsync } from '@vueuse/core';
 import { defined } from '../types';
-import { computed, h, reactive } from 'vue'
+import { h, reactive } from 'vue'
 import { moveElementToFront, zip } from '../array';
 import translate from '../translations/translate.ts'
 
@@ -46,6 +46,7 @@ props.games.forEach( (game, index) => {
   }, props.id, domain)
 });
 
+/*
 // Statistics per category
 const categoryStats = computed(() => {
   const stats = new Map<string, [number, number]>();
@@ -69,6 +70,7 @@ const categoryStats = computed(() => {
     }
   });
 });
+*/
 
 // Render function
 const userSkills = () => {
@@ -131,7 +133,7 @@ const userSkills = () => {
 </script>
 
 <template>
-  <div class="success-boxes">
+  <!--<div class="success-boxes">
     <SuccessBox
       v-for="([category, completion]) in categoryStats"
       :key="category"
@@ -139,7 +141,7 @@ const userSkills = () => {
     >
       {{ translate(category) }}
     </SuccessBox>
-  </div>
+  </div>-->
   <userSkills />
 </template>
 
