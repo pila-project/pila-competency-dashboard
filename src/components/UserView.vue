@@ -3,12 +3,12 @@
 import klBrowserAgent from '@knowlearning/agents/browser.js';
 import { computedAsync } from '@vueuse/core';
 import { defined } from '../types';
-import { h, reactive } from 'vue';
+import { computed, h, reactive } from 'vue';
 import { moveElementToFront, zip } from '../array';
 import translate from '../translations/translate.ts';
 
 // student UUID is passed as a prop
-const props = defineProps<{ id: string, games: string[] }>();
+const props = defineProps<{ id: string, showDetails: boolean, games: string[] }>();
 
 // Get the domain name override for accessing user data
 const urlParams = new URLSearchParams(window.location.search);
@@ -73,23 +73,40 @@ const categoryStats = computed(() => {
 */
 
 // Render function
-const userSkills = () => {
+const userSkills = computed(() => {
   // Parse data
   type SectionedSkills = Map<string, Set<string>>;
   const skills: SectionedSkills = new Map();
   const zipped = zip(gameNames.value, competencyState);
+  type GameData = Map<string, [number, number]>;
+  const summaryText = translate('summary');
   const data = zipped.map(([game, state]) => {
-    const data = new Map<string, [number, number]>();
-    for (const [key, value] of Object.entries(state)) {
-      // Parse key and store skill
-      const parts = key.split(':');
-      const ns = defined(parts[0]);
-      const skill = defined(parts[1]);
-      skills.get(ns)?.add(skill) ?? skills.set(ns, new Set([skill]));
-      // Process data
-      data.set(key, value);
+    if (props.showDetails) {
+      const data: GameData = new Map();
+      for (const [key, value] of Object.entries(state)) {
+        // Parse key and store skill
+        const parts = key.split(':');
+        const ns = defined(parts[0]);
+        const skill = defined(parts[1]);
+        skills.get(ns)?.add(skill) ?? skills.set(ns, new Set([skill]));
+        // Process data
+        data.set(key, value);
+      }
+      return [game, data] as [string, GameData];
+    } else {
+      const stats: GameData = new Map();
+      for (const [key, value] of Object.entries(state)) {
+        const parts = key.split(':');
+        const category = defined(parts[0]);
+        const syntSkillName = category === 'general' ? defined(parts[1]) : summaryText;
+        const synthKey = `${category}:${syntSkillName}`;
+        const [completed, total] = value;
+        const [prevCompleted, prevTotal] = stats.get(synthKey) ?? [0, 0];
+        stats.set(synthKey, [prevCompleted + completed, prevTotal + total]);
+        skills.set(category, new Set([syntSkillName]));
+      }
+      return [game, stats] as [string, GameData];
     }
-    return [game, data] as [string, Map<string, [number, number]>];
   });
 
   // We want the general category first
@@ -129,7 +146,7 @@ const userSkills = () => {
     ])
   );
   return h('table', [header, subHeader, ...content]);
-}
+});
 </script>
 
 <template>
