@@ -32,7 +32,7 @@ const userNames = computed(() => users.value.map(user => user.name));
 // Active student index
 const activeIndex = ref(0);
 
-const showDetails = ref(false);
+const showDetails = ref(true);
 
 // Derived properties
 const activeId = computed(() => users.value[activeIndex.value]?.id);

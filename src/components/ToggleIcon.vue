@@ -1,26 +1,26 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed } from 'vue';
 
 interface Props {
-  modelValue: boolean;
   iconTrue: string;
   iconFalse: string;
 }
 
 const props = defineProps<Props>();
-const emit = defineEmits<{ (e: 'update:modelValue', newValue: boolean): void }>();
-
-const value = ref(false);
+const model = defineModel<boolean>();
 
 const toggleValue = () => {
-  value.value = !value.value;
-  emit('update:modelValue', value.value);
+  model.value = !model.value;
 };
+
+const currentIcon = computed(() =>
+  model.value ? props.iconTrue : props.iconFalse
+);
 </script>
 
 <template>
   <img
-    :src="value ? props.iconTrue : props.iconFalse"
+    :src="currentIcon"
     class="toggle-icon"
     @click="toggleValue"
   >

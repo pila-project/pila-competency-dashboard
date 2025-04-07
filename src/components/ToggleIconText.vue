@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 
 interface Props {
-  modelValue: boolean;
   iconTrue: string;
   iconFalse: string;
   textTrue?: string;
@@ -10,21 +9,18 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-const emit = defineEmits<{ (e: 'update:modelValue', newValue: boolean): void }>();
-
-const value = ref(false);
+const model = defineModel<boolean>();
 
 const toggleValue = () => {
-  value.value = !value.value;
-  emit('update:modelValue', value.value);
+  model.value = !model.value;
 };
 
 const currentIcon = computed(() =>
-  props.modelValue ? props.iconTrue : props.iconFalse
+  model.value ? props.iconTrue : props.iconFalse
 );
 
 const currentText = computed(() =>
-  props.modelValue ? props.textTrue : props.textFalse
+  model.value ? props.textTrue : props.textFalse
 );
 </script>
 
