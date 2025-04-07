@@ -86,7 +86,6 @@ onUnmounted(() => {
 .dropdown {
   position: relative;
   font-family: 'Roboto', sans-serif;
-  margin: 16px 0;
 }
 .dropdown-wrapper {
   border-bottom: 1px solid #ccc;

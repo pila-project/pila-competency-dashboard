@@ -55,10 +55,10 @@ const currentText = computed(() =>
   border-radius: 32px;
 }
 .toggle-wrapper:hover {
-  background-color: #e8e8ff;
+  background-color: #e7e8ff;
 }
 .toggle-wrapper:active {
-  background-color: #d0d0ff;
+  background-color: #b8b9ff;
 }
 .toggle-icon {
   width: 24px;
