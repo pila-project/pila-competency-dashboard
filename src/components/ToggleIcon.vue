@@ -33,9 +33,9 @@ const toggleValue = () => {
   height: 24px;
 }
 .toggle-icon:hover {
-  filter: brightness(0.8);
+  background-color: #e8e8ff;
 }
 .toggle-icon:active {
-  filter: brightness(0.6);
+  background-color: #d0d0ff;
 }
 </style>

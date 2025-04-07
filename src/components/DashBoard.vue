@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // import ToggleButton from './ToggleButton.vue';
 import DropDownList from './DropDownList.vue';
-import ToggleIcon from './ToggleIcon.vue';
+import ToggleIconText from './ToggleIconText.vue';
 import { computed, ref } from 'vue';
 import { computedAsync } from '@vueuse/core';
 import UserView from './UserView.vue';
@@ -63,16 +63,18 @@ const studentLabel = translate('Student');
       </ToggleButton>
     </div>
     <h2>{{ activeName }}</h2>-->
-    <ToggleIcon
+    <ToggleIconText
       v-model="showDetails"
       :icon-false="unfoldMore"
       :icon-true="unfoldLess"
+      :text-true="translate('Hide details')"
+      :text-false="translate('Show details')"
     />
     <UserView
       v-if="activeId"
       :id="activeId"
       :key="activeId"
-      :showDetails
+      :show-details
       :games
     />
   </div>
