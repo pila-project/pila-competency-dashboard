@@ -20,13 +20,12 @@ button {
   width: 24px;
   height: 24px;
   padding: 4px;
+  background: rgb(255, 196, 66);
 }
 button:hover {
-  background-color: #e8e8ff;
+  background-color: rgb(255, 215, 127);
 }
-button:active {
-  background-color: #d0d0ff;
-}
+
 img {
   width: 24px;
   height: 24px;
