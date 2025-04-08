@@ -1,14 +1,24 @@
 <script setup lang="ts">
 // import SuccessBox from './SuccessBox.vue';
 import klBrowserAgent from '@knowlearning/agents/browser.js';
-import { computedAsync } from '@vueuse/core';
 import { defined } from '../types';
 import { computed, h, reactive } from 'vue';
 import { moveElementToFront, zip } from '../array';
 import translate from '../translations/translate.ts';
+import info from '../assets/info.svg';
+import IconButton from './IconButton.vue';
 
 // student UUID is passed as a prop
-const props = defineProps<{ id: string, showDetails: boolean, games: string[] }>();
+type GameAndName = { game: string, name: string };
+const props = defineProps<{
+  id: string,
+  showDetails: boolean,
+  gamesAndNames: GameAndName[]
+}>();
+
+const emit = defineEmits<{
+  (e: 'show-rules', game: string): void;
+}>();
 
 // Get the domain name override for accessing user data
 const urlParams = new URLSearchParams(window.location.search);
@@ -17,29 +27,10 @@ const isLocalHost = location.hostname === "localhost" || location.hostname === "
 const domain = domainFromUrl ?? (isLocalHost ? 'localhost:8080' : undefined);
 console.debug('Using domain for user data:', domain);
 
-// Setup game names fetching
-const gameNames = computedAsync(
-  async () => {
-    return Promise.all(props.games.map(async (game) => {
-      let gameName = game;
-      try {
-        const url = isLocalHost ?
-          `https://localhost:8080/api/v0/gameNames/${game}` :
-          `https://cand.li/api/v0/gameNames/${game}`;
-        gameName = await (await fetch(url)).text();
-      } catch (e) {
-        console.error('Failed to fetch game name:', e);
-      }
-      return gameName;
-    }));
-  },
-  props.games
-);
-
 // Setup game state fetching
 type ReportData = Record<string, [number, number]>;
-const competencyState = reactive(props.games.map(_ => ({} as ReportData)));
-props.games.forEach( (game, index) => {
+const competencyState = reactive(props.gamesAndNames.map(_ => ({} as ReportData)));
+props.gamesAndNames.forEach( ({ game }, index) => {
   klBrowserAgent.watch(`pila/competencies/${game}`, ({ state }) => {
     console.debug('Received competency state for game (using watch):', props.id, game, state);
     competencyState[index] = state as ReportData;
@@ -73,14 +64,15 @@ const categoryStats = computed(() => {
 */
 
 // Render function
+const showRuleScoring = translate('Show rule scoring');
 const userSkills = computed(() => {
   // Parse data
   type SectionedSkills = Map<string, Set<string>>;
   const skills: SectionedSkills = new Map();
-  const zipped = zip(gameNames.value, competencyState);
+  const zipped = zip(props.gamesAndNames, competencyState);
   type GameData = Map<string, [number, number]>;
   const summaryText = translate('summary');
-  const data = zipped.map(([game, state]) => {
+  const data = zipped.map(([gameAndName, state]) => {
     if (props.showDetails) {
       const data: GameData = new Map();
       for (const [key, value] of Object.entries(state)) {
@@ -92,7 +84,7 @@ const userSkills = computed(() => {
         // Process data
         data.set(key, value);
       }
-      return [game, data] as [string, GameData];
+      return [gameAndName, data] as [GameAndName, GameData];
     } else {
       const stats: GameData = new Map();
       for (const [key, value] of Object.entries(state)) {
@@ -105,7 +97,7 @@ const userSkills = computed(() => {
         stats.set(synthKey, [prevCompleted + completed, prevTotal + total]);
         skills.set(category, new Set([syntSkillName]));
       }
-      return [game, stats] as [string, GameData];
+      return [gameAndName, stats] as [GameAndName, GameData];
     }
   });
 
@@ -122,8 +114,17 @@ const userSkills = computed(() => {
     ...skillArray.flatMap(([_, skills]) => Array.from(skills).map(skill => h('td', { class: 'skill-name' }, translate(skill))))
   ]);
   const content = data.map(
-    ([game, data]) => h('tr', [
-      h('th', game),
+    ([gameAndName, data]) => h('tr', [
+      h('th', h('div', [
+        h('span', gameAndName.name),
+        h(IconButton, {
+          src: info,
+          title: showRuleScoring,
+          onClick: () => {
+            emit('show-rules', gameAndName.game);
+          }
+        })
+      ])),
       ...skillArray.flatMap(([ns, skills]) => {
         return Array.from(skills).map(skill => {
           const key = `${ns}:${skill}`;
@@ -200,7 +201,7 @@ table :deep(tr:first-child) {
 }
 table :deep(tr:nth-child(2)) {
   position: sticky;
-  top: 23px; /* this needs to be tuned manually, and for that a specific font must be chosen */
+  top: 21px; /* this needs to be tuned manually, and for that a specific font must be chosen */
   background-color: white;
   z-index: 2;
 }
@@ -216,10 +217,15 @@ table :deep(tr) > *:last-child {
 table :deep(tr) > th:first-child {
   position: sticky;
   left: 0px;
-  padding-right: 16px;
+  padding-right: 8px;
   background-color: white;
   border-right: 1px solid gray;
-  text-align: right;
+}
+table :deep(tr:nth-child(n + 3)) > th:first-child > div {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 4px;
 }
 
 </style>

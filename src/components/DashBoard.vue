@@ -2,11 +2,13 @@
 // import ToggleButton from './ToggleButton.vue';
 import DropDownList from './DropDownList.vue';
 import ToggleIconText from './ToggleIconText.vue';
+import UserView from './UserView.vue';
+import ScoringRulesDialog from './ScoringRulesDialog.vue';
 import { computed, ref } from 'vue';
 import { computedAsync } from '@vueuse/core';
-import UserView from './UserView.vue';
 import klBrowserAgent from '@knowlearning/agents/browser.js';
-import translate from '../translations/translate.ts';
+import translate from '../translations/translate.ts'
+import { defined } from '../types';
 import unfoldLess from '../assets/unfold_less.svg';
 import unfoldMore from '../assets/unfold_more.svg';
 
@@ -29,10 +31,39 @@ const users = computedAsync(
 );
 const userNames = computed(() => users.value.map(user => user.name));
 
+// Fetch game names using the Candli API
+const isLocalHost = location.hostname === "localhost" || location.hostname === "127.0.0.1";
+const gameNames = computedAsync(
+  async () => {
+    return Promise.all(props.games.map(async (game) => {
+      let gameName = game;
+      try {
+        const url = isLocalHost ?
+          `https://localhost:8080/api/v0/gameNames/${game}` :
+          `https://cand.li/api/v0/gameNames/${game}`;
+        gameName = await (await fetch(url)).text();
+      } catch (e) {
+        console.error('Failed to fetch game name:', e);
+      }
+      return gameName;
+    }));
+  },
+  props.games
+);
+const gameAndNames = computed(() => {
+  return props.games.map((game, index) => {
+    return {
+      game,
+      name: gameNames.value[index] ?? game,
+    };
+  });
+});
+
 // Active student index
 const activeIndex = ref(0);
-
+// Whether we show details
 const showDetails = ref(true);
+const rulesShownFor = ref<string | null>(null);
 
 // Derived properties
 const activeId = computed(() => users.value[activeIndex.value]?.id);
@@ -42,46 +73,60 @@ function selectStudent(index: number) {
   activeIndex.value = index;
 }*/
 
+function showRules(game: string) {
+  rulesShownFor.value = game;
+}
+
 const studentLabel = translate('Student');
 </script>
 
 <template>
-  <div class="outer">
-    <div class="inner">
-      <!--<div class="users">
-          <ToggleButton
-            v-for="(student, index) in users"
-            :key="student.id"
-            :active="index === activeIndex"
-            @click="selectStudent(index)"
-          >
-            {{ student.name }}
-          </ToggleButton>
+  <template v-if="rulesShownFor">
+    <ScoringRulesDialog
+      :game="rulesShownFor"
+      :name="defined(gameNames[games.indexOf(rulesShownFor)])"
+      @close="rulesShownFor = null"
+    />
+  </template>
+  <template v-else>
+    <div class="outer">
+      <div class="inner">
+        <!--<div class="users">
+            <ToggleButton
+              v-for="(student, index) in users"
+              :key="student.id"
+              :active="index === activeIndex"
+              @click="selectStudent(index)"
+            >
+              {{ student.name }}
+            </ToggleButton>
+          </div>
+          <h2>{{ activeName }}</h2>-->
+        <div class="row">
+          <DropDownList
+            v-model="activeIndex"
+            :options="userNames"
+            :label="studentLabel"
+          />
+          <ToggleIconText
+            v-model="showDetails"
+            :icon-false="unfoldMore"
+            :icon-true="unfoldLess"
+            :text-true="translate('Hide details')"
+            :text-false="translate('Show details')"
+          />
         </div>
-        <h2>{{ activeName }}</h2>-->
-      <div class="row">
-        <DropDownList
-          v-model="activeIndex"
-          :options="userNames"
-          :label="studentLabel"
-        />
-        <ToggleIconText
-          v-model="showDetails"
-          :icon-false="unfoldMore"
-          :icon-true="unfoldLess"
-          :text-true="translate('Hide details')"
-          :text-false="translate('Show details')"
+        <UserView
+          v-if="activeId"
+          :id="activeId"
+          :key="activeId"
+          :show-details
+          :games-and-names="gameAndNames"
+          @show-rules="showRules"
         />
       </div>
-      <UserView
-        v-if="activeId"
-        :id="activeId"
-        :key="activeId"
-        :show-details
-        :games
-      />
     </div>
-  </div>
+  </template>
 </template>
 
 <style scoped>

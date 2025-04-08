@@ -21,21 +21,20 @@ const currentIcon = computed(() =>
 <template>
   <img
     :src="currentIcon"
-    class="toggle-icon"
     @click="toggleValue"
   >
 </template>
 
 <style scoped>
-.toggle-icon {
+img {
   cursor: pointer;
   width: 24px;
   height: 24px;
 }
-.toggle-icon:hover {
+img:hover {
   background-color: #e8e8ff;
 }
-.toggle-icon:active {
+img:active {
   background-color: #d0d0ff;
 }
 </style>

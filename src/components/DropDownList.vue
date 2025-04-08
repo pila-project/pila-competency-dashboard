@@ -101,13 +101,13 @@ onUnmounted(() => {
   flex-direction: column;
 }
 .dropdown-label {
-  font-size: 0.75rem;
+  font-size: 12px;
   color: #666;
   line-height: 1;
 }
 .dropdown-selected {
   font-weight: bold;
-  font-size: 1.2rem;
+  font-size: 20px;
   color: #333;
   line-height: 1.2;
   padding-top: 4px;
