@@ -8,8 +8,9 @@ import translate from '../translations/translate.ts';
 import info from '../assets/info.svg';
 import IconButton from './IconButton.vue';
 
-// student UUID is passed as a prop
+// A game UUID and its resolved name
 type GameAndName = { game: string, name: string };
+// student UUID is passed as a prop
 const props = defineProps<{
   id: string,
   showDetails: boolean,
@@ -64,7 +65,7 @@ const categoryStats = computed(() => {
 */
 
 // Render function
-const showRuleScoring = translate('Show rule scoring');
+const showRuleScoring = translate('Show scoring rules');
 const userSkills = computed(() => {
   // Parse data
   type SectionedSkills = Map<string, Set<string>>;
