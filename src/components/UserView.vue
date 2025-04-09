@@ -206,7 +206,7 @@ table :deep(tr:nth-child(2)) {
   top: 21px; /* this needs to be tuned manually, and for that a specific font must be chosen */
   background-color: white;
   z-index: 2;
-  color: DimGray;
+  color: #444;
 }
 table :deep(tr:nth-child(2)) td {
   padding-bottom: 8px;
