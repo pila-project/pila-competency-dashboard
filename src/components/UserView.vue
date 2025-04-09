@@ -199,12 +199,14 @@ table :deep(tr:first-child) {
   top: 0px;
   background-color: white;
   z-index: 2;
+  color: rgb(46, 50, 219);
 }
 table :deep(tr:nth-child(2)) {
   position: sticky;
   top: 21px; /* this needs to be tuned manually, and for that a specific font must be chosen */
   background-color: white;
   z-index: 2;
+  color: DimGray;
 }
 table :deep(tr:nth-child(2)) td {
   padding-bottom: 8px;
