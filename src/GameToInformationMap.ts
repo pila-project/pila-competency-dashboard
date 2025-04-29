@@ -34,7 +34,18 @@ const gameToInformationMap: { [key: string]: string } = {
   "943efee423d75be3bdf761f1e81c7e37" : "ba928160-111e-11f0-bb98-750ff9de9d61",
   "ba07adc0589f5f3a990f995cc54b8efd" : "ba928160-111e-11f0-bb98-750ff9de9d61",
 
+  // Incredible Machines
+  ///////////////////////
+  // Tutorial
+  "incredible_machine0": "17d4f460-1b93-11f0-be2e-d3fcfb182e9e",
+  // Level 1
+  "incredible_machine1": "68992820-1f5e-11f0-9279-b59599f87f2c",
+  // Level 2
+  "incredible_machine2": "eea6a190-1f5e-11f0-9279-b59599f87f2c",
+
+
   // Pethematicians 28d92c80-1b8f-11f0-be2e-d3fcfb182e9e
+  "97c9ab96e9c75cd485d50d0c51fa7004": "28d92c80-1b8f-11f0-be2e-d3fcfb182e9e",
 }
 
 export default gameToInformationMap;
