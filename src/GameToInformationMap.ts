@@ -1,4 +1,4 @@
-export default {
+const gameToInformationMap: { [key: string]: string } = {
   // SR – Student Dashboard Star System b778aae0-0f34-11f0-8880-e76a25c7e2da
   // SR – Save our Oceans (Easy)
   "0adb500fa86a5cc6b62ab7ca3680ec64" : "11ae3f00-0f14-11f0-9ab3-19305081d06b",
@@ -31,8 +31,10 @@ export default {
   "7160574dc9ec52938f23011a4bcd698f" : "ba674820-111d-11f0-bb98-750ff9de9d61",
   "93690465d42f52058c92404e329651be" : "ba674820-111d-11f0-bb98-750ff9de9d61",
   // SR – Paper Planes
-  "7160574dc9ec52938f23011a4bcd698f" : "ba928160-111e-11f0-bb98-750ff9de9d61",
+  // "7160574dc9ec52938f23011a4bcd698f" : "ba928160-111e-11f0-bb98-750ff9de9d61",
   "ba07adc0589f5f3a990f995cc54b8efd" : "ba928160-111e-11f0-bb98-750ff9de9d61",
 
   // Pethematicians 28d92c80-1b8f-11f0-be2e-d3fcfb182e9e
 }
+
+export default gameToInformationMap;
