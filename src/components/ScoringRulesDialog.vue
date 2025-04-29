@@ -11,7 +11,7 @@ defineEmits(['close']);
 
 const backTitle = translate("Back");
 
-const infoId = GameToInformationMap[props.game]
+const infoId = GameToInformationMap[props.game];
 </script>
 
 <template>
@@ -24,7 +24,6 @@ const infoId = GameToInformationMap[props.game]
       />
       <span>{{ name }}</span>
     </div>
-    <!-- TODO KL: Replace this with the Markdown renderer component-->
     <div class="dialog-content">
       <vueEmbedComponent
         v-if="infoId"
