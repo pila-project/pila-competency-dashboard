@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import { vueEmbedComponent } from '@knowlearning/agents/vue.js'
 import translate from '../translations/translate';
 import IconButton from './IconButton.vue';
@@ -11,8 +10,6 @@ const props = defineProps<{ game: string, name: string }>();
 defineEmits(['close']);
 
 const backTitle = translate("Back");
-
-const markdown = ref(null)
 
 const infoId = GameToInformationMap[props.game]
 </script>
