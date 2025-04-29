@@ -9,22 +9,24 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@babel/types": "^7.24.0",
+    "@babel/types": "^7.27.0",
     "@knowlearning/agents": "^0.9.174",
-    "@vueuse/core": "^10.9.0",
-    "vue": "^3.4.21"
+    "@types/web-bluetooth": "^0.0.21",
+    "@vueuse/core": "^13.1.0",
+    "vue": "^3.5.13"
   },
   "devDependencies": {
-    "@eslint/js": "^9.0.0",
-    "@nabla/vite-plugin-eslint": "^2.0.4",
-    "@types/node": "^20.12.7",
-    "@vitejs/plugin-vue": "^5.0.4",
-    "eslint": "^8.57.0",
-    "eslint-plugin-vue": "^9.25.0",
-    "typescript": "^5.4.5",
-    "typescript-eslint": "^7.7.0",
-    "vite": "^5.4.18",
-    "vite-plugin-mkcert": "^1.17.5",
-    "vue-tsc": "^2.0.13"
-  }
+    "@eslint/js": "^9.25.1",
+    "@nabla/vite-plugin-eslint": "^2.0.5",
+    "@types/node": "^22.15.3",
+    "@vitejs/plugin-vue": "^5.2.3",
+    "eslint": "^9.25.1",
+    "eslint-plugin-vue": "^10.0.1",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.31.1",
+    "vite": "^6.3.3",
+    "vite-plugin-mkcert": "^1.17.8",
+    "vue-tsc": "^2.2.10"
+  },
+  "packageManager": "pnpm@9.0.4+sha1.b198ac6d38244fd829253720f9daafd6a606834d"
 }
