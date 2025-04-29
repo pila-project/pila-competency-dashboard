@@ -3,6 +3,7 @@ import { vueEmbedComponent } from '@knowlearning/agents/vue.js'
 import translate from '../translations/translate';
 import IconButton from './IconButton.vue';
 import arrowBack from '../assets/arrow_back.svg';
+// @ts-ignore
 import GameToInformationMap from '../GameToInformationMap.js'
 
 const props = defineProps<{ game: string, name: string }>();

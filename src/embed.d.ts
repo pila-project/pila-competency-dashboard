@@ -1,3 +1,4 @@
+declare module '@knowlearning/agents/vue.js';
 declare module '@knowlearning/agents/browser.js' {
 	export interface BrowserAgentAuthInfo {
 		name?: string;
