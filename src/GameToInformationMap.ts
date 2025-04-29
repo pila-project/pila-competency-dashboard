@@ -31,7 +31,7 @@ const gameToInformationMap: { [key: string]: string } = {
   "7160574dc9ec52938f23011a4bcd698f" : "ba674820-111d-11f0-bb98-750ff9de9d61",
   "93690465d42f52058c92404e329651be" : "ba674820-111d-11f0-bb98-750ff9de9d61",
   // SR – Paper Planes
-  // "7160574dc9ec52938f23011a4bcd698f" : "ba928160-111e-11f0-bb98-750ff9de9d61",
+  "943efee423d75be3bdf761f1e81c7e37" : "ba928160-111e-11f0-bb98-750ff9de9d61",
   "ba07adc0589f5f3a990f995cc54b8efd" : "ba928160-111e-11f0-bb98-750ff9de9d61",
 
   // Pethematicians 28d92c80-1b8f-11f0-be2e-d3fcfb182e9e
