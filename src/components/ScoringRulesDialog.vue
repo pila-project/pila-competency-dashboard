@@ -1,13 +1,20 @@
 <script setup lang="ts">
+import { ref } from 'vue'
+import { vueEmbedComponent } from '@knowlearning/agents/vue.js'
 import translate from '../translations/translate';
 import IconButton from './IconButton.vue';
 import arrowBack from '../assets/arrow_back.svg';
+import GameToInformationMap from '../GameToInformationMap.js'
 
-defineProps<{ game: string, name: string }>();
+const props = defineProps<{ game: string, name: string }>();
 
 defineEmits(['close']);
 
 const backTitle = translate("Back");
+
+const markdown = ref(null)
+
+const infoId = GameToInformationMap[props.game]
 </script>
 
 <template>
@@ -21,7 +28,13 @@ const backTitle = translate("Back");
       <span>{{ name }}</span>
     </div>
     <!-- TODO KL: Replace this with the Markdown renderer component-->
-    <div>Here will come the rendered Markdown scoring rules for game {{ game }}</div>
+    <div class="dialog-content">
+      <vueEmbedComponent
+        v-if="infoId"
+        :id="infoId"
+      />
+      <span v-else> --- </span>
+    </div>
   </div>
 </template>
 
@@ -30,6 +43,8 @@ const backTitle = translate("Back");
   width: 100vw;
   height: 100vh;
   overflow: auto;
+  display: flex;
+  flex-direction: column;
 }
 .dialog-title {
   display: flex;
@@ -44,5 +59,8 @@ const backTitle = translate("Back");
 .dialog-title > span {
   font-weight: bold;
   font-size: 20px;
+}
+.dialog-content {
+  flex-grow: 1;
 }
 </style>
