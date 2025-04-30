@@ -68,6 +68,8 @@ const translations: { [key: string]: string } =  {
   "strategise": "การวางกลยุทธ์",
   "adapt": "การปรับตัว",
   "adjust": "การปรับเปลี่ยน",
+  "Explain student dashboard": "อธิบายแดชบอร์ดของนักเรียน",
+  "Student dashboard": "แดชบอร์ดของนักเรียน",
 }
 
 export default translations;

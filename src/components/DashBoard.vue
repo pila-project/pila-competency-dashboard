@@ -4,14 +4,15 @@ import DropDownList from './DropDownList.vue';
 import ToggleIconText from './ToggleIconText.vue';
 import UserView from './UserView.vue';
 import ScoringRulesDialog from './ScoringRulesDialog.vue';
+import IconButton from './IconButton.vue';
 import { computed, ref } from 'vue';
 import { computedAsync } from '@vueuse/core';
 import klBrowserAgent from '@knowlearning/agents';
 import translate from '../translations/translate.ts'
-import { defined } from '../types';
+import GameToInformationMap from '../GameToInformationMap.ts';
 import unfoldLess from '../assets/unfold_less.svg';
 import unfoldMore from '../assets/unfold_more.svg';
-import GameToInformationMap from '../GameToInformationMap.ts';
+import info from '../assets/info.svg';
 
 // Student UUIDs are passed as props
 const props = defineProps<{ users: string[], games: string[] }>();
@@ -64,7 +65,7 @@ const gameAndNames = computed(() => {
 const activeIndex = ref(0);
 // Whether we show details
 const showDetails = ref(true);
-const rulesShownFor = ref<string | null>(null);
+const rulesShownFor = ref<[string, string] | null>(null);
 
 // Derived properties
 const activeId = computed(() => users.value[activeIndex.value]?.id);
@@ -76,7 +77,17 @@ function selectStudent(index: number) {
 
 function showRulesForGame(game: string) {
   const infoId = GameToInformationMap[game];
-  rulesShownFor.value = infoId ?? null;
+  if (infoId !== undefined) {
+    const gameName = gameNames.value[props.games.indexOf(game)] ?? game;
+    rulesShownFor.value = [infoId, gameName];
+  }
+}
+
+function showRulesForStudentDashboard() {
+  rulesShownFor.value = [
+    'b778aae0-0f34-11f0-8880-e76a25c7e2da',
+    translate('Student dashboard')
+  ];
 }
 
 const studentLabel = translate('Student');
@@ -85,8 +96,8 @@ const studentLabel = translate('Student');
 <template>
   <template v-if="rulesShownFor">
     <ScoringRulesDialog
-      :info-id="rulesShownFor"
-      :name="defined(gameNames[games.indexOf(rulesShownFor)])"
+      :info-id="rulesShownFor[0]"
+      :name="rulesShownFor[1]"
       @close="rulesShownFor = null"
     />
   </template>
@@ -110,6 +121,12 @@ const studentLabel = translate('Student');
             :options="userNames"
             :label="studentLabel"
           />
+          <IconButton
+            :title="translate('Explain student dashboard')"
+            :src="info"
+            @click="showRulesForStudentDashboard()"
+          />
+          <div class="spacer" />
           <ToggleIconText
             v-model="showDetails"
             :icon-false="unfoldMore"
@@ -158,9 +175,12 @@ h2 {
 .row {
   display: flex;
   justify-content: space-between;
-  align-items: end;
+  align-items: center;
 }
 .row > div {
   margin: 16px;
+}
+.spacer {
+  flex-grow: 1;
 }
 </style>
