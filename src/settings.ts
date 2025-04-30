@@ -1,3 +1,5 @@
-const settings: { [key: string]: string } = {}
+const settings: {
+  LANGUAGES?: string[];
+} = {};
 
 export default settings;

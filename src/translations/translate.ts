@@ -1,5 +1,5 @@
-import th from './th.ts'
-import settings from '../settings.ts'
+import th from './th.ts';
+import settings from '../settings.ts';
 
 export default function translate(sourceString: string) {
   const lowerSourceString = sourceString.toLowerCase();

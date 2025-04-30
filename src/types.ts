@@ -25,3 +25,6 @@ export function nonnull<T>(value: T | null, message: string | null = null): T {
 	}
 	return value;
 }
+
+/// A primitive type constructor
+export type PrimitiveTypes = 'undefined' | 'null' | 'number' | 'string' | 'boolean'| 'bigint' | 'symbol' | 'object' | 'function';
