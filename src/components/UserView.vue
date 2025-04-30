@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // import SuccessBox from './SuccessBox.vue';
-import klBrowserAgent from '@knowlearning/agents/browser.js';
+import klBrowserAgent from '@knowlearning/agents';
 import { defined } from '../types';
 import { computed, h, reactive } from 'vue';
 import { moveElementToFront, zip } from '../array';

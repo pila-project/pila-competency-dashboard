@@ -6,7 +6,7 @@ import UserView from './UserView.vue';
 import ScoringRulesDialog from './ScoringRulesDialog.vue';
 import { computed, ref } from 'vue';
 import { computedAsync } from '@vueuse/core';
-import klBrowserAgent from '@knowlearning/agents/browser.js';
+import klBrowserAgent from '@knowlearning/agents';
 import translate from '../translations/translate.ts'
 import { defined } from '../types';
 import unfoldLess from '../assets/unfold_less.svg';
