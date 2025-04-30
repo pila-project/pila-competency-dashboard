@@ -12,7 +12,7 @@ declare module '@knowlearning/agents' {
 		domain: string;
 		server: string;
 		session: string;
-		environment: object;
+		variables: object;
 	}
 
 	export interface AgentUploadInfo {
