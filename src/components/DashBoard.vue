@@ -11,6 +11,7 @@ import translate from '../translations/translate.ts'
 import { defined } from '../types';
 import unfoldLess from '../assets/unfold_less.svg';
 import unfoldMore from '../assets/unfold_more.svg';
+import GameToInformationMap from '../GameToInformationMap.ts';
 
 // Student UUIDs are passed as props
 const props = defineProps<{ users: string[], games: string[] }>();
@@ -73,8 +74,9 @@ function selectStudent(index: number) {
   activeIndex.value = index;
 }*/
 
-function showRules(game: string) {
-  rulesShownFor.value = game;
+function showRulesForGame(game: string) {
+  const infoId = GameToInformationMap[game];
+  rulesShownFor.value = infoId ?? null;
 }
 
 const studentLabel = translate('Student');
@@ -83,7 +85,7 @@ const studentLabel = translate('Student');
 <template>
   <template v-if="rulesShownFor">
     <ScoringRulesDialog
-      :game="rulesShownFor"
+      :info-id="rulesShownFor"
       :name="defined(gameNames[games.indexOf(rulesShownFor)])"
       @close="rulesShownFor = null"
     />
@@ -122,7 +124,7 @@ const studentLabel = translate('Student');
           :key="activeId"
           :show-details
           :games-and-names="gameAndNames"
-          @show-rules="showRules"
+          @show-rules="showRulesForGame"
         />
       </div>
     </div>

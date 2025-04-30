@@ -81,6 +81,7 @@ const userSkills = computed(() => {
         const parts = key.split(':');
         const ns = defined(parts[0]);
         const skill = defined(parts[1]);
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         skills.get(ns)?.add(skill) ?? skills.set(ns, new Set([skill]));
         // Process data
         data.set(key, value);

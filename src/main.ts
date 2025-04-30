@@ -5,7 +5,8 @@ import klBrowserAgent from '@knowlearning/agents';
 import settings from './settings.ts'
 
 //  Expose agent for debugging
-(<any>window).Agent = klBrowserAgent
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+(window as any).Agent = klBrowserAgent
 
 console.info(`PILA competence dashboard rev ${__GIT_REVISION__}`);
 klBrowserAgent.environment().then(({ variables }) => {

@@ -3,15 +3,12 @@ import { vueEmbedComponent } from '@knowlearning/agents/vue.js'
 import translate from '../translations/translate';
 import IconButton from './IconButton.vue';
 import arrowBack from '../assets/arrow_back.svg';
-import GameToInformationMap from '../GameToInformationMap.ts';
 
-const props = defineProps<{ game: string, name: string }>();
+defineProps<{ infoId: string, name: string }>();
 
 defineEmits(['close']);
 
 const backTitle = translate("Back");
-
-const infoId = GameToInformationMap[props.game];
 </script>
 
 <template>
