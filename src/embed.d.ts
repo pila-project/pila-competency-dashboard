@@ -12,6 +12,7 @@ declare module '@knowlearning/agents/browser.js' {
 		domain: string;
 		server: string;
 		session: string;
+		environment: object;
 	}
 
 	export interface AgentUploadInfo {
