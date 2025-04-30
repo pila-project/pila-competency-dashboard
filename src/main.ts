@@ -8,9 +8,7 @@ import settings from './settings.ts'
 (<any>window).Agent = klBrowserAgent
 
 console.info(`PILA competence dashboard rev ${__GIT_REVISION__}`);
-Agent
-  .environment()
-  .then(({ variables: { LANGUAGES } }) => {
-    settings.LANGUAGES = LANGUAGES;
-    createApp(App).mount('#app');
-  })
+klBrowserAgent.environment().then(({ variables }) => {
+  settings.LANGUAGES = variables.LANGUAGES as any;
+  createApp(App).mount('#app');
+});
