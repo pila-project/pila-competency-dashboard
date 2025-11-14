@@ -71,10 +71,10 @@ const translations: { [key: string]: string } =  {
   "adjust": "การปรับเปลี่ยน",
   "explain student dashboard": "อธิบายแดชบอร์ดของนักเรียน",
   "student dashboard": "แดชบอร์ดของนักเรียน",
-  "Student": "นักเรียน",
+  "student": "นักเรียน",
   "summary": "สรุป",
-  "Hide details": "ซ่อนรายละเอียด",
-  "Show details": "แสดงรายละเอียด",
+  "hide details": "ซ่อนรายละเอียด",
+  "show details": "แสดงรายละเอียด",
 }
 
 export default translations;
