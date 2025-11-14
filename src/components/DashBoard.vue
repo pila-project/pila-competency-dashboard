@@ -39,7 +39,7 @@ const isLocalHost = location.hostname === "localhost" || location.hostname === "
 const gameNames = computedAsync(
   async () => {
     return Promise.all(props.games.map(async (game) => {
-      const name = gameToNameMap[game];
+      const name = gameToNameMap(game);
       if (name !== undefined) {
         return name;
       }
