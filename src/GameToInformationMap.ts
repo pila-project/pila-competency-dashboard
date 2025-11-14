@@ -15,12 +15,14 @@ const gameToInformationMap: { [key: string]: string } = {
   // SR - Chirpy's Adventure (Difficult)
   "376229ad69aa520b9ba8c711c2dbdbb8" : "eb001b40-111a-11f0-bb98-750ff9de9d61",
   "4a95faed0b105822adc1d90c96c4b645" : "eb001b40-111a-11f0-bb98-750ff9de9d61",
+  "25a6ac35e1c25713b5fedd0008599a52" : "eb001b40-111a-11f0-bb98-750ff9de9d61",
   // SR – Math Invaders
   "4ef94c7e64a95c27b188a00621053697" : "77757160-111b-11f0-bb98-750ff9de9d61",
   "5f4092d3956e53c98ccec3da0a2f3925" : "77757160-111b-11f0-bb98-750ff9de9d61",
   // SR – Magical Mixology
   "7a042193eea054b1b85925e074de9b15" : "dcd76c20-111b-11f0-bb98-750ff9de9d61",
   "de6a2f6f709e57a1b3aa6358a5a8d0bb" : "dcd76c20-111b-11f0-bb98-750ff9de9d61",
+  "27d432ad29ad5e2c8d1c8ebf60d48c0a" : "dcd76c20-111b-11f0-bb98-750ff9de9d61",
 
   // Science
   ///////////
