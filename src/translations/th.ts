@@ -66,6 +66,7 @@ const translations: { [key: string]: string } =  {
   "implement": "การลงมือปฏิบัติ",
   "area": "พื้นที่",
   "strategise": "การวางกลยุทธ์",
+  "strategize": "การวางกลยุทธ์",
   "adapt": "การปรับตัว",
   "adjust": "การปรับเปลี่ยน",
   "explain student dashboard": "อธิบายแดชบอร์ดของนักเรียน",
