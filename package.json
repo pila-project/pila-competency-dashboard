@@ -10,10 +10,15 @@
   },
   "dependencies": {
     "@babel/types": "^7.27.0",
-    "@knowlearning/agents": "^0.9.182",
+    "@knowlearning/agents": "^0.9.194",
     "@types/web-bluetooth": "^0.0.21",
     "@vueuse/core": "^13.9.0",
     "vue": "^3.5.22"
+  },
+  "overrides": {
+    "@knowlearning/agents": {
+      "uuid": "11.1.1"
+    }
   },
   "devDependencies": {
     "@eslint/js": "^9.25.1",
