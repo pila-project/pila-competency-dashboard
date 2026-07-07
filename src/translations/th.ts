@@ -75,6 +75,7 @@ const translations: { [key: string]: string } =  {
   "summary": "สรุป",
   "hide details": "ซ่อนรายละเอียด",
   "show details": "แสดงรายละเอียด",
+  "if the student has played the game multiple times, this dashboard displays their best result. the dashboard updates after they finish playing a game.": "หากนักเรียนเล่นเกมหลายครั้ง แดชบอร์ดนี้จะแสดงผลลัพธ์ที่ดีที่สุดของนักเรียน แดชบอร์ดจะอัปเดตหลังจากนักเรียนเล่นเกมเสร็จ",
 }
 
 export default translations;

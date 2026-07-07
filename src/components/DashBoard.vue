@@ -148,6 +148,12 @@ const studentLabel = translate('Student');
           :games-and-names="gameAndNames"
           @show-rules="showRulesForGame"
         />
+        <p
+          v-if="activeId"
+          class="data-note"
+        >
+          {{ translate("If the student has played the game multiple times, this dashboard displays their best result. The dashboard updates after they finish playing a game.") }}
+        </p>
       </div>
     </div>
   </template>
@@ -187,5 +193,12 @@ h2 {
 }
 .spacer {
   flex-grow: 1;
+}
+.data-note {
+  color: #666;
+  font-size: 0.82rem;
+  line-height: 1.35;
+  margin: 4px 16px 16px;
+  max-width: 100%;
 }
 </style>
