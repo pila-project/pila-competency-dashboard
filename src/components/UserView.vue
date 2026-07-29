@@ -32,7 +32,7 @@ console.debug('Using domain for user data:', domain);
 type ReportData = Record<string, [number, number]>;
 const competencyState = reactive(props.gamesAndNames.map(_ => ({} as ReportData)));
 props.gamesAndNames.forEach( ({ game }, index) => {
-  if (game.startsWith('incredible_machines')) {
+  if (game.startsWith('incredible_machine')) {
     // retrofit old game name pattern
     game = `candli_editor/${game}`
   }
