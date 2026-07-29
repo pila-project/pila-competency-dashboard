@@ -57,7 +57,13 @@ const gameToInformationMap: { [key: string]: string } = {
   // Level 1
   "candli_editor/incredible_machine1": "68992820-1f5e-11f0-9279-b59599f87f2c",
   // Level 2
-  "candli_editor/incredible_machine2": "eea6a190-1f5e-11f0-9279-b59599f87f2c"
+  "candli_editor/incredible_machine2": "eea6a190-1f5e-11f0-9279-b59599f87f2c",
+  // Tutorial
+  "incredible_machine0": "17d4f460-1b93-11f0-be2e-d3fcfb182e9e",
+  // Level 1
+  "incredible_machine1": "68992820-1f5e-11f0-9279-b59599f87f2c",
+  // Level 2
+  "incredible_machine2": "eea6a190-1f5e-11f0-9279-b59599f87f2c"
 }
 
 export default gameToInformationMap;
