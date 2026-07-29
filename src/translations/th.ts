@@ -49,6 +49,7 @@ const translations: { [key: string]: string } =  {
   "comparison": "การเปรียบเทียบ",
   "conversion of volume": "การแปลงหน่วยปริมาตร",
   "general": "ทั่วไป",
+  "generalize": "สรุปเป็นหลักทั่วไป",
   "attempts": "ลองใหม่",
   "not started": "ยังไม่ได้เริ่ม",
   "game": "เกม",
