@@ -32,6 +32,10 @@ console.debug('Using domain for user data:', domain);
 type ReportData = Record<string, [number, number]>;
 const competencyState = reactive(props.gamesAndNames.map(_ => ({} as ReportData)));
 props.gamesAndNames.forEach( ({ game }, index) => {
+  if (game.startsWith('incredible_machines')) {
+    // retrofit old game name pattern
+    game = `candli_editor/${game}`
+  }
   klBrowserAgent.watch(`pila/competencies/${game}`, ({ state }) => {
     console.debug('Received competency state for game (using watch):', props.id, game, state);
     competencyState[index] = state as ReportData;
