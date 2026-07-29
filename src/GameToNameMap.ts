@@ -14,5 +14,17 @@ export function gameToNameMap(key: string) {
             "กลไกมหัศจรรย์ - ระดับ 2" :
             "Incredible Machines - Level 2"
         ,
+        "incredible_machine0": isLangThai() ?
+            "กลไกมหัศจรรย์ - บทช่วยสอน" :
+            "Incredible Machines - Tutorial"
+        ,
+        "incredible_machine1": isLangThai() ?
+            "กลไกมหัศจรรย์ - ระดับ 1" :
+            "Incredible Machines - Level 1"
+        ,
+        "incredible_machine2": isLangThai() ?
+            "กลไกมหัศจรรย์ - ระดับ 2" :
+            "Incredible Machines - Level 2"
+        ,
     }[key];
 }
