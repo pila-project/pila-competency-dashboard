@@ -1,8 +1,8 @@
 import th from './th.ts';
-import settings from '../settings.ts';
+import { getLanguage } from '../language.ts';
 
 export function isLangThai() {
-  return settings.LANGUAGES?.[0]?.startsWith('th') ?? false;
+  return getLanguage() === 'th';
 }
 
 export default function translate(sourceString: string) {

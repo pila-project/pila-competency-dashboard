@@ -11,6 +11,7 @@ import klBrowserAgent from '@knowlearning/agents';
 import translate from '../translations/translate.ts'
 import GameToInformationMap from '../GameToInformationMap.ts';
 import { gameToNameMap } from '../GameToNameMap.ts';
+import { getLanguage } from '../language.ts';
 import unfoldLess from '../assets/unfold_less.svg';
 import unfoldMore from '../assets/unfold_more.svg';
 import info from '../assets/info.svg';
@@ -39,7 +40,7 @@ const isLocalHost = location.hostname === "localhost" || location.hostname === "
 const gameNames = computedAsync(
   async () => {
     return Promise.all(props.games.map(async (game) => {
-      const name = gameToNameMap(game);
+      const name = gameToNameMap(game, getLanguage());
       if (name !== undefined) {
         return name;
       }

@@ -1,4 +1,5 @@
 const settings: {
+  FORCED_LANGUAGE?: string;
   LANGUAGES?: string[];
 } = {};
 
