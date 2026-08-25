@@ -7,9 +7,8 @@ import { moveElementToFront, zip } from '../array';
 import translate from '../translations/translate.ts';
 import info from '../assets/info.svg';
 import IconButton from './IconButton.vue';
+import type { GameAndName } from '../GameSource.ts';
 
-// A game UUID and its resolved name
-type GameAndName = { game: string, name: string };
 // student UUID is passed as a prop
 const props = defineProps<{
   id: string,
@@ -18,7 +17,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: 'show-rules', game: string): void;
+  (e: 'show-rules', gameId: string): void;
 }>();
 
 // Get the domain name override for accessing user data
@@ -29,18 +28,31 @@ const domain = domainFromUrl ?? (isLocalHost ? 'localhost:8080' : undefined);
 console.debug('Using domain for user data:', domain);
 
 // Setup game state fetching
-type ReportData = Record<string, [number, number]>;
+type CompetencyScore = [number, number];
+type ReportData = Record<string, unknown>;
 const competencyState = reactive(props.gamesAndNames.map(_ => ({} as ReportData)));
-props.gamesAndNames.forEach( ({ game }, index) => {
-  if (game.startsWith('incredible_machine')) {
+props.gamesAndNames.forEach(({ competencyStateId }, index) => {
+  let stateId = competencyStateId;
+  if (stateId.startsWith('incredible_machine')) {
     // retrofit old game name pattern
-    game = `candli_editor/${game}`
+    stateId = `candli_editor/${stateId}`
   }
-  klBrowserAgent.watch(`pila/competencies/${game}`, ({ state }) => {
-    console.debug('Received competency state for game (using watch):', props.id, game, state);
+  klBrowserAgent.watch(`pila/competencies/${stateId}`, ({ state }) => {
+    console.debug('Received competency state for game (using watch):', props.id, stateId, state);
     competencyState[index] = state as ReportData;
   }, props.id, domain)
 });
+
+function competencyEntries(state: ReportData): [string, CompetencyScore][] {
+  return Object.entries(state).filter((entry): entry is [string, CompetencyScore] => {
+    const [key, value] = entry;
+    return key !== 'game' &&
+      Array.isArray(value) &&
+      value.length >= 2 &&
+      typeof value[0] === 'number' &&
+      typeof value[1] === 'number';
+  });
+}
 
 /*
 // Statistics per category
@@ -80,7 +92,7 @@ const userSkills = computed(() => {
   const data = zipped.map(([gameAndName, state]) => {
     if (props.showDetails) {
       const data: GameData = new Map();
-      for (const [key, value] of Object.entries(state)) {
+      for (const [key, value] of competencyEntries(state)) {
         // Parse key and store skill
         const parts = key.split(':');
         const ns = defined(parts[0]);
@@ -93,7 +105,7 @@ const userSkills = computed(() => {
       return [gameAndName, data] as [GameAndName, GameData];
     } else {
       const stats: GameData = new Map();
-      for (const [key, value] of Object.entries(state)) {
+      for (const [key, value] of competencyEntries(state)) {
         const parts = key.split(':');
         const category = defined(parts[0]);
         const syntSkillName = category === 'general' ? defined(parts[1]) : summaryText;
@@ -127,7 +139,7 @@ const userSkills = computed(() => {
           src: info,
           title: showRuleScoring,
           onClick: () => {
-            emit('show-rules', gameAndName.game);
+            emit('show-rules', gameAndName.gameId);
           }
         })
       ])),

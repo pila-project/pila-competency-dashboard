@@ -1,4 +1,4 @@
-const gameToInformationMap: { [key: string]: string } = {
+const gameToInformationMap: { [gameId: string]: string } = {
   // SR – Student Dashboard Star System b778aae0-0f34-11f0-8880-e76a25c7e2da
   // SR – Save our Oceans (Easy)
   "0adb500fa86a5cc6b62ab7ca3680ec64" : "11ae3f00-0f14-11f0-9ab3-19305081d06b",

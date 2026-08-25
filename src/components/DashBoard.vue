@@ -12,12 +12,13 @@ import translate from '../translations/translate.ts'
 import GameToInformationMap from '../GameToInformationMap.ts';
 import { gameToNameMap } from '../GameToNameMap.ts';
 import { getLanguage } from '../language.ts';
+import type { GameAndName, GameSource } from '../GameSource.ts';
 import unfoldLess from '../assets/unfold_less.svg';
 import unfoldMore from '../assets/unfold_more.svg';
 import info from '../assets/info.svg';
 
 // Student UUIDs are passed as props
-const props = defineProps<{ users: string[], games: string[] }>();
+const props = defineProps<{ users: string[], games: GameSource[] }>();
 
 // Fetch users from the KL API
 const users = computedAsync(
@@ -35,37 +36,29 @@ const users = computedAsync(
 );
 const userNames = computed(() => users.value.map(user => user.name));
 
-// Fetch game names using the Candli API
+// Fetch game names using the Candli API. Customized games store their underlying
+// game UUID alongside the competency data, so resolve that first.
 const isLocalHost = location.hostname === "localhost" || location.hostname === "127.0.0.1";
-const gameNames = computedAsync(
-  async () => {
-    return Promise.all(props.games.map(async (game) => {
-      const name = gameToNameMap(game, getLanguage());
-      if (name !== undefined) {
-        return name;
-      }
-      let gameName = game;
-      try {
-        const url = isLocalHost ?
-          `https://localhost:8080/api/v0/gameNames/${game}` :
-          `https://cand.li/api/v0/gameNames/${game}`;
-        gameName = await (await fetch(url)).text();
-      } catch (e) {
-        console.error('Failed to fetch game name:', e);
-      }
-      return gameName;
-    }));
-  },
-  props.games
-);
-const gameAndNames = computed(() => {
-  return props.games.map((game, index) => {
-    return {
-      game,
-      name: gameNames.value[index] ?? game,
-    };
-  });
-});
+const urlParams = new URLSearchParams(window.location.search);
+const domainFromUrl = urlParams.get('domain');
+const domain = domainFromUrl ?? (isLocalHost ? 'localhost:8080' : undefined);
+
+async function getGameName(gameId: string) {
+  const knownName = gameToNameMap(gameId, getLanguage());
+  if (knownName !== undefined) {
+    return knownName;
+  }
+
+  try {
+    const url = isLocalHost ?
+      `https://localhost:8080/api/v0/gameNames/${gameId}` :
+      `https://cand.li/api/v0/gameNames/${gameId}`;
+    return await (await fetch(url)).text();
+  } catch (e) {
+    console.error('Failed to fetch game name:', e);
+    return gameId;
+  }
+}
 
 // Active student index
 const activeIndex = ref(0);
@@ -75,16 +68,56 @@ const rulesShownFor = ref<[string, string] | null>(null);
 
 // Derived properties
 const activeId = computed(() => users.value[activeIndex.value]?.id);
+const gameAndNames = computedAsync<GameAndName[]>(
+  async () => {
+    const userId = activeId.value;
+    if (userId === undefined) {
+      return [];
+    }
+
+    return Promise.all(props.games.map(async (source) => {
+      let competencyStateId: string;
+      let gameId: string;
+      if (source.kind === 'game') {
+        competencyStateId = source.gameId;
+        gameId = source.gameId;
+      } else {
+        competencyStateId = source.configurationId;
+        const state = await klBrowserAgent.state(
+          `pila/competencies/${source.configurationId}`,
+          userId,
+          domain
+        ) as Record<string, unknown>;
+        if (typeof state.game === 'string' && state.game.length > 0) {
+          gameId = state.game;
+        } else {
+          console.error(
+            'Customized game competency state does not contain a game UUID:',
+            source.configurationId
+          );
+          gameId = source.configurationId;
+        }
+      }
+
+      return {
+        competencyStateId,
+        gameId,
+        name: await getGameName(gameId),
+      };
+    }));
+  },
+  []
+);
 /*const activeName = computed(() => users.value[activeIndex.value]?.name);
 
 function selectStudent(index: number) {
   activeIndex.value = index;
 }*/
 
-function showRulesForGame(game: string) {
-  const infoId = GameToInformationMap[game];
+function showRulesForGame(gameId: string) {
+  const infoId = GameToInformationMap[gameId];
   if (infoId !== undefined) {
-    const gameName = gameNames.value[props.games.indexOf(game)] ?? game;
+    const gameName = gameAndNames.value.find(entry => entry.gameId === gameId)?.name ?? gameId;
     rulesShownFor.value = [infoId, gameName];
   }
 }
@@ -142,7 +175,7 @@ const studentLabel = translate('Student');
           />
         </div>
         <UserView
-          v-if="activeId"
+          v-if="activeId && gameAndNames.length === games.length"
           :id="activeId"
           :key="activeId"
           :show-details
