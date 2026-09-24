@@ -28,6 +28,18 @@ export const gameNameRegistry: Readonly<Record<string, LocalizedGameName>> = {
     en: 'Pethematicians!',
     th: 'เพื่อนคู่คิดคณิตศาสตร์!',
   },
+  '714036bc69c752d391873f1d7b1b7021': {
+    en: 'Gravity',
+    th: 'โลก VS ดวงจันทร์',
+  },
+  '6d8afb7cd018586ab361331cbfa6cfd2': {
+    en: 'Mushroom Mayhem',
+    th: 'เห็ดจอมซน'
+  },
+  'bf489a1bf21d5519a3b2b385a49acc3d': {
+    en: 'Paper Planes',
+    th: 'ลูกบอล, กระดาษ, จรวด'
+  },
   'incredible_machine0': {
     en: 'Incredible Machines (tutorial)!',
     th: 'เครื่องจักรมหัศจรรย์ (บทช่วยสอน)!',
