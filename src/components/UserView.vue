@@ -17,7 +17,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: 'show-rules', gameId: string): void;
+  (e: 'show-rules', competencyStateId: string): void;
 }>();
 
 // Get the domain name override for accessing user data
@@ -139,7 +139,7 @@ const userSkills = computed(() => {
           src: info,
           title: showRuleScoring,
           onClick: () => {
-            emit('show-rules', gameAndName.gameId);
+            emit('show-rules', gameAndName.competencyStateId);
           }
         })
       ])),

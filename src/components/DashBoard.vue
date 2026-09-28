@@ -36,8 +36,6 @@ const users = computedAsync(
 );
 const userNames = computed(() => users.value.map(user => user.name));
 
-// Fetch game names using the Candli API. Customized games store their underlying
-// game UUID alongside the competency data, so resolve that first.
 const isLocalHost = location.hostname === "localhost" || location.hostname === "127.0.0.1";
 const urlParams = new URLSearchParams(window.location.search);
 const domainFromUrl = urlParams.get('domain');
@@ -78,31 +76,45 @@ const gameAndNames = computedAsync<GameAndName[]>(
     return Promise.all(props.games.map(async (source) => {
       let competencyStateId: string;
       let gameId: string;
+      let name: string | undefined;
       if (source.kind === 'game') {
         competencyStateId = source.gameId;
         gameId = source.gameId;
       } else {
         competencyStateId = source.configurationId;
-        const state = await klBrowserAgent.state(
-          `pila/competencies/${source.configurationId}`,
-          userId,
-          domain
-        ) as Record<string, unknown>;
-        if (typeof state.game === 'string' && state.game.length > 0) {
-          gameId = state.game;
+        let configuration: Record<string, unknown> = {};
+        try {
+          configuration = await klBrowserAgent.state(source.configurationId) as Record<string, unknown>;
+        } catch (error) {
+          console.error('Failed to fetch customized game configuration:', error);
+        }
+        if (typeof configuration.name === 'string' && configuration.name.trim().length > 0) {
+          name = configuration.name;
+        }
+        if (typeof configuration.game === 'string' && configuration.game.length > 0) {
+          gameId = configuration.game;
         } else {
-          console.error(
-            'Customized game competency state does not contain a game UUID:',
-            source.configurationId
-          );
-          gameId = source.configurationId;
+          const state = await klBrowserAgent.state(
+            `pila/competencies/${source.configurationId}`,
+            userId,
+            domain
+          ) as Record<string, unknown>;
+          if (typeof state.game === 'string' && state.game.length > 0) {
+            gameId = state.game;
+          } else {
+            console.error(
+              'Customized game competency state does not contain a game UUID:',
+              source.configurationId
+            );
+            gameId = source.configurationId;
+          }
         }
       }
 
       return {
         competencyStateId,
         gameId,
-        name: await getGameName(gameId),
+        name: name ?? await getGameName(gameId),
       };
     }));
   },
@@ -114,11 +126,11 @@ function selectStudent(index: number) {
   activeIndex.value = index;
 }*/
 
-function showRulesForGame(gameId: string) {
-  const infoId = GameToInformationMap[gameId];
-  if (infoId !== undefined) {
-    const gameName = gameAndNames.value.find(entry => entry.gameId === gameId)?.name ?? gameId;
-    rulesShownFor.value = [infoId, gameName];
+function showRulesForGame(competencyStateId: string) {
+  const game = gameAndNames.value.find(entry => entry.competencyStateId === competencyStateId);
+  const infoId = game && GameToInformationMap[game.gameId];
+  if (game && infoId !== undefined) {
+    rulesShownFor.value = [infoId, game.name];
   }
 }
 

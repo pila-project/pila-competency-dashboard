@@ -6,15 +6,15 @@ import type { GameSource } from './GameSource';
 const urlParams = new URLSearchParams(window.location.search);
 const users: string[] = [];
 const games: GameSource[] = [];
+const configurationIdPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 for (const [key, value] of urlParams) {
   if (key === 'user') {
     users.push(value);
   }
-  if (key === 'game') {
-    games.push({ kind: 'game', gameId: value });
-  }
-  if (key === 'customized_game') {
+  if (key === 'customized_game' || (key === 'game' && configurationIdPattern.test(value))) {
     games.push({ kind: 'customized-game', configurationId: value });
+  } else if (key === 'game') {
+    games.push({ kind: 'game', gameId: value });
   }
 }
 if (games.length === 0) {
