@@ -41,21 +41,26 @@ const urlParams = new URLSearchParams(window.location.search);
 const domainFromUrl = urlParams.get('domain');
 const domain = domainFromUrl ?? (isLocalHost ? 'localhost:8080' : undefined);
 
-async function getGameName(gameId: string) {
+async function getGameName(gameId: string, fallbackName?: string) {
   const knownName = gameToNameMap(gameId, getLanguage());
   if (knownName !== undefined) {
     return knownName;
   }
-
   try {
     const url = isLocalHost ?
       `https://localhost:8080/api/v0/gameNames/${gameId}` :
       `https://cand.li/api/v0/gameNames/${gameId}`;
-    return await (await fetch(url)).text();
-  } catch (e) {
-    console.error('Failed to fetch game name:', e);
-    return gameId;
+    const response = await fetch(url);
+    if (response.ok) {
+      const name = (await response.text()).trim();
+      if (name) {
+        return name;
+      }
+    }
+  } catch (error) {
+    console.error('Failed to fetch game name:', error);
   }
+  return fallbackName ?? gameId;
 }
 
 // Active student index
@@ -114,7 +119,7 @@ const gameAndNames = computedAsync<GameAndName[]>(
       return {
         competencyStateId,
         gameId,
-        name: name ?? await getGameName(gameId),
+        name: await getGameName(gameId, name),
       };
     }));
   },
