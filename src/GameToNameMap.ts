@@ -64,6 +64,34 @@ export const gameNameRegistry: Readonly<Record<string, LocalizedGameName>> = {
     en: 'Incredible Machines (level 2)!',
     th: 'เครื่องจักรมหัศจรรย์ (ด่าน 2)!',
   },
+  'candli_editor/primaryTutorial': {
+    en: 'Become a game creator (tutorial)',
+    th: 'มาเป็นนักสร้างเกมกันเถอะ (บทสอน)',
+  },
+  'candli_editor/primaryLevel1': {
+    en: 'Become a game creator - level 1',
+    th: 'มาเป็นนักสร้างเกมกันเถอะ - ระดับ 1',
+  },
+  'candli_editor/primaryLevel2': {
+    en: 'Become a game creator - level 2',
+    th: 'มาเป็นนักสร้างเกมกันเถอะ - ระดับ 2',
+  },
+  'candli_editor/primaryLevel3': {
+    en: 'Become a game creator - level 3',
+    th: 'มาเป็นนักสร้างเกมกันเถอะ - ระดับ 3',
+  },
+  'candli_editor/primaryLevel4': {
+    en: 'Be a game creator pro - level 4',
+    th: 'มาเป็นนักสร้างเกมมือโปรกันเถอะ - ระดับ 4',
+  },
+  'candli_editor/primaryLevel5': {
+    en: 'Be a game creator pro - level 5',
+    th: 'มาเป็นนักสร้างเกมมือโปรกันเถอะ - ระดับ 5',
+  },
+  'candli_editor/primaryLevel6': {
+    en: 'Be a game creator pro - level 6',
+    th: 'มาเป็นนักสร้างเกมมือโปรกันเถอะ - ระดับ 6',
+  },
 };
 
 export function gameToNameMap(gameId: string, language: string) {
