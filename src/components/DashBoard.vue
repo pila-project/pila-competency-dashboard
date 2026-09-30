@@ -9,7 +9,7 @@ import { computed, ref } from 'vue';
 import { computedAsync } from '@vueuse/core';
 import klBrowserAgent from '@knowlearning/agents';
 import translate from '../translations/translate.ts'
-import GameToInformationMap from '../GameToInformationMap.ts';
+import { getGameInformationId } from '../GameToInformationMap.ts';
 import { gameToNameMap } from '../GameToNameMap.ts';
 import { getLanguage } from '../language.ts';
 import type { GameAndName, GameSource } from '../GameSource.ts';
@@ -133,7 +133,7 @@ function selectStudent(index: number) {
 
 function showRulesForGame(competencyStateId: string) {
   const game = gameAndNames.value.find(entry => entry.competencyStateId === competencyStateId);
-  const infoId = game && GameToInformationMap[game.gameId];
+  const infoId = game && getGameInformationId(game.gameId, getLanguage());
   if (game && infoId !== undefined) {
     rulesShownFor.value = [infoId, game.name];
   }
