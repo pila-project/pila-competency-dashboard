@@ -62,7 +62,11 @@ const gameToInformationMap: Readonly<Record<string, LocalizedGameInformation>> =
   // Pethematicians 28d92c80-1b8f-11f0-be2e-d3fcfb182e9e
   "97c9ab96e9c75cd485d50d0c51fa7004": { en: "28d92c80-1b8f-11f0-be2e-d3fcfb182e9e" },
 
-  // SPS: 66501b2e0fa0588e9549e2c280cc1be0
+  // SPS: Community Beach Challenge
+  "66501b2e0fa0588e9549e2c280cc1be0": {
+    en: "450237c0-c607-11f1-a350-6b9b9fd814ea",
+    th: "52a4ca20-c60a-11f1-a350-6b9b9fd814ea"
+  },
 
   // Incredible Machines
   ///////////////////////
