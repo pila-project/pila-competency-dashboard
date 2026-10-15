@@ -13,6 +13,7 @@
     "@knowlearning/agents": "^0.9.194",
     "@types/web-bluetooth": "^0.0.21",
     "@vueuse/core": "^13.9.0",
+    "markdown-it": "^15.0.2",
     "vue": "^3.5.22"
   },
   "overrides": {
@@ -23,6 +24,7 @@
   "devDependencies": {
     "@eslint/js": "^9.25.1",
     "@nabla/vite-plugin-eslint": "^2.0.6",
+    "@types/markdown-it": "^14.2.0",
     "@types/node": "^22.18.8",
     "@vitejs/plugin-vue": "^6.0.1",
     "eslint": "^9.25.1",
@@ -32,5 +34,8 @@
     "vite": "^7.1.8",
     "vite-plugin-mkcert": "^1.17.8",
     "vue-tsc": "^3.1.0"
+  },
+  "allowScripts": {
+    "esbuild@0.27.2": true
   }
 }

@@ -9,6 +9,10 @@ const gitCommitHash = execSync('git rev-parse HEAD').toString().trimEnd();
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [vue(), eslintPlugin(), mkcert({mkcertPath: '/usr/bin/mkcert'})],
+  optimizeDeps: {
+    // Socket.IO imports this CommonJS dependency; serve its converted ESM version.
+    include: ['debug'],
+  },
   define: {
     // Define a global constant for the git revision
     '__GIT_REVISION__': JSON.stringify(gitCommitHash)

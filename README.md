@@ -9,3 +9,13 @@ The vite config expects the [`mkcert`](https://github.com/FiloSottile/mkcert) to
 sudo apt install mkcert libnss3-tools
 mkcert -install
 ```
+
+## Develop locally
+
+Run `npm run dev`, open the local HTTPS URL printed by Vite, and use your existing `domain`, `user`, and `game` query parameters.
+
+You need a running Candli dev server on `localhost:8080` to resolve games locally.
+
+Add `&previewQualitative=1` to show sample qualitative feedback while keeping real quantitative scores.
+Samples in `src/qualitativePreview.ts` match games by index; games beyond the samples have no qualitative feedback.
+The flag only works on `localhost`, `127.0.0.1`, and IPv6 loopback (`[::1]`).

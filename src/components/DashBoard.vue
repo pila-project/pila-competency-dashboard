@@ -36,7 +36,7 @@ const users = computedAsync(
 );
 const userNames = computed(() => users.value.map(user => user.name));
 
-const isLocalHost = location.hostname === "localhost" || location.hostname === "127.0.0.1";
+const isLocalHost = ['localhost', '127.0.0.1', '[::1]', '::1'].includes(location.hostname);
 const urlParams = new URLSearchParams(window.location.search);
 const domainFromUrl = urlParams.get('domain');
 const domain = domainFromUrl ?? (isLocalHost ? 'localhost:8080' : undefined);
@@ -67,6 +67,7 @@ async function getGameName(gameId: string, fallbackName?: string) {
 const activeIndex = ref(0);
 // Whether we show details
 const showDetails = ref(true);
+const sectionTitlesVisible = ref(false);
 const rulesShownFor = ref<[string, string] | null>(null);
 
 // Derived properties
@@ -184,6 +185,7 @@ const studentLabel = translate('Student');
           />
           <div class="spacer" />
           <ToggleIconText
+            v-if="!sectionTitlesVisible"
             v-model="showDetails"
             :icon-false="unfoldMore"
             :icon-true="unfoldLess"
@@ -198,13 +200,18 @@ const studentLabel = translate('Student');
           :show-details
           :games-and-names="gameAndNames"
           @show-rules="showRulesForGame"
-        />
-        <p
-          v-if="activeId"
-          class="data-note"
+          @section-titles-visible="sectionTitlesVisible = $event"
         >
-          {{ translate("If the student has played the game multiple times, this dashboard displays their best result. The dashboard updates after they finish playing a game.") }}
-        </p>
+          <template #quantitative-controls>
+            <ToggleIconText
+              v-model="showDetails"
+              :icon-false="unfoldMore"
+              :icon-true="unfoldLess"
+              :text-true="translate('Hide details')"
+              :text-false="translate('Show details')"
+            />
+          </template>
+        </UserView>
       </div>
     </div>
   </template>
@@ -219,8 +226,8 @@ const studentLabel = translate('Student');
 .inner {
   display: flex;
   flex-direction: column;
-  width: max-content;
-  max-width: 100vw;
+  width: 100%;
+  max-width: 960px;
   max-height: 100vh;
 }
 /*.users {
@@ -244,12 +251,5 @@ h2 {
 }
 .spacer {
   flex-grow: 1;
-}
-.data-note {
-  color: #666;
-  font-size: 0.82rem;
-  line-height: 1.35;
-  margin: 4px 16px 16px;
-  max-width: 100%;
 }
 </style>

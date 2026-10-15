@@ -1,13 +1,14 @@
 <script setup lang="ts">
-// import SuccessBox from './SuccessBox.vue';
 import klBrowserAgent from '@knowlearning/agents';
 import { defined } from '../types';
-import { computed, h, reactive } from 'vue';
+import { computed, h, reactive, watch } from 'vue';
+import MarkdownIt from 'markdown-it';
 import { moveElementToFront, zip } from '../array';
 import translate from '../translations/translate.ts';
 import info from '../assets/info.svg';
 import IconButton from './IconButton.vue';
 import type { GameAndName } from '../GameSource.ts';
+import { qualitativePreviewReports } from '../qualitativePreview.ts';
 
 // student UUID is passed as a prop
 const props = defineProps<{
@@ -18,30 +19,71 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: 'show-rules', competencyStateId: string): void;
+  (e: 'section-titles-visible', visible: boolean): void;
 }>();
 
 // Get the domain name override for accessing user data
 const urlParams = new URLSearchParams(window.location.search);
 const domainFromUrl = urlParams.get('domain');
-const isLocalHost = location.hostname === "localhost" || location.hostname === "127.0.0.1";
+const isLocalHost = ['localhost', '127.0.0.1', '[::1]', '::1'].includes(location.hostname);
+const previewQualitative = isLocalHost && urlParams.get('previewQualitative') === '1';
 const domain = domainFromUrl ?? (isLocalHost ? 'localhost:8080' : undefined);
 console.debug('Using domain for user data:', domain);
 
 // Setup game state fetching
 type CompetencyScore = [number, number];
 type ReportData = Record<string, unknown>;
-const competencyState = reactive(props.gamesAndNames.map(_ => ({} as ReportData)));
-props.gamesAndNames.forEach(({ competencyStateId }, index) => {
-  let stateId = competencyStateId;
-  if (stateId.startsWith('incredible_machine')) {
-    // retrofit old game name pattern
-    stateId = `candli_editor/${stateId}`
+const competencyState = reactive<ReportData[]>([]);
+const qualitativeState = reactive<string[]>([]);
+
+// The installed SDK returns an unsubscribe function, but declares a void return type.
+const watchState = klBrowserAgent.watch.bind(klBrowserAgent) as (
+  ...args: Parameters<typeof klBrowserAgent.watch>
+) => () => void;
+
+watch(() => [props.id, props.gamesAndNames] as const, ([userId, games], _, onCleanup) => {
+  competencyState.splice(0, competencyState.length, ...games.map(() => ({})));
+  qualitativeState.splice(0, qualitativeState.length, ...games.map(() => ''));
+  const unsubscribe: (() => void)[] = [];
+  onCleanup(() => unsubscribe.forEach(stop => stop()));
+
+  games.forEach(({ competencyStateId }, index) => {
+    // Retrofit the old game name pattern for both report types.
+    const stateId = competencyStateId.startsWith('incredible_machine')
+      ? `candli_editor/${competencyStateId}`
+      : competencyStateId;
+    unsubscribe.push(watchState(`pila/competencies/${stateId}`, ({ state }) => {
+      competencyState[index] = state && typeof state === 'object' ? state as ReportData : {};
+    }, userId, domain));
+    if (previewQualitative) {
+      qualitativeState[index] = qualitativePreviewReports[index] ?? '';
+      return;
+    }
+    unsubscribe.push(watchState(`pila/qualitative_evaluation/${stateId}`, ({ state }) => {
+      // Contract: { markdown?: string }; producers overwrite the current evaluation.
+      const markdown = (state as ReportData | null)?.markdown;
+      qualitativeState[index] = typeof markdown === 'string' ? markdown : '';
+    }, userId, domain));
+  });
+}, { immediate: true });
+
+const markdown = new MarkdownIt({ html: false });
+// Keep report headings below the game heading in the document hierarchy.
+markdown.core.ruler.push('report-heading-levels', state => {
+  for (const token of state.tokens) {
+    if (token.type === 'heading_open' || token.type === 'heading_close') {
+      token.tag = `h${Math.min(Number(token.tag.slice(1)) + 3, 6)}`;
+    }
   }
-  klBrowserAgent.watch(`pila/competencies/${stateId}`, ({ state }) => {
-    console.debug('Received competency state for game (using watch):', props.id, stateId, state);
-    competencyState[index] = state as ReportData;
-  }, props.id, domain)
 });
+const qualitativeEntries = computed(() => props.gamesAndNames.flatMap((game, index) => {
+  const text = qualitativeState[index] ?? '';
+  return text.trim() ? [{ ...game, html: markdown.render(text) }] : [];
+}));
+const hasQuantitativeData = computed(() => competencyState.some(state => competencyEntries(state).length > 0));
+const showQuantitative = computed(() => hasQuantitativeData.value || qualitativeEntries.value.length === 0);
+const showSectionTitles = computed(() => hasQuantitativeData.value && qualitativeEntries.value.length > 0);
+watch(showSectionTitles, visible => emit('section-titles-visible', visible), { immediate: true });
 
 function competencyEntries(state: ReportData): [string, CompetencyScore][] {
   return Object.entries(state).filter((entry): entry is [string, CompetencyScore] => {
@@ -54,31 +96,6 @@ function competencyEntries(state: ReportData): [string, CompetencyScore][] {
   });
 }
 
-/*
-// Statistics per category
-const categoryStats = computed(() => {
-  const stats = new Map<string, [number, number]>();
-  for (const state of competencyState) {
-    for (const [key, value] of Object.entries(state)) {
-      const parts = key.split(':');
-      const category = defined(parts[0]);
-      if (category === 'general') {
-        continue;
-      }
-      const [completed, total] = value;
-      const [prevCompleted, prevTotal] = stats.get(category) ?? [0, 0];
-      stats.set(category, [prevCompleted + completed, prevTotal + total]);
-    }
-  }
-  return Array.from(stats).map(([category, [completed, total]]) => {
-    if (total !== 0) {
-      return [category, completed / total] as [string, number];
-    } else {
-      return [category, 0] as [string, number];
-    }
-  });
-});
-*/
 
 // Render function
 const showRuleScoring = translate('Show scoring rules');
@@ -169,25 +186,157 @@ const userSkills = computed(() => {
 </script>
 
 <template>
-  <!--<div class="success-boxes">
-    <SuccessBox
-      v-for="([category, completion]) in categoryStats"
-      :key="category"
-      :completion="completion"
+  <section v-if="showQuantitative">
+    <div
+      v-if="showSectionTitles"
+      class="evaluation-title quantitative-header"
     >
-      {{ translate(category) }}
-    </SuccessBox>
-  </div>-->
-  <userSkills />
+      <h2>
+        {{ translate('Quantitative evaluation') }}
+      </h2>
+      <div class="quantitative-controls">
+        <slot name="quantitative-controls" />
+      </div>
+    </div>
+    <userSkills />
+    <p class="data-note">
+      {{ translate("If the student has played the game multiple times, this dashboard displays their best result. The dashboard updates after they finish playing a game.") }}
+    </p>
+  </section>
+  <section v-if="qualitativeEntries.length">
+    <h2
+      v-if="showSectionTitles"
+      class="evaluation-title"
+    >
+      {{ translate('Qualitative evaluation') }}
+    </h2>
+    <article
+      v-for="entry in qualitativeEntries"
+      :key="entry.competencyStateId"
+      class="qualitative-evaluation"
+    >
+      <h3 class="game-title">
+        {{ entry.name }}
+      </h3>
+      <div class="evaluation-box">
+        <span
+          v-if="previewQualitative"
+          class="preview-notice"
+        >
+          {{ translate('Sample feedback') }}
+        </span>
+        <!-- Raw HTML is disabled in the Markdown renderer. -->
+        <!-- eslint-disable vue/no-v-html -->
+        <div
+          class="markdown"
+          v-html="entry.html"
+        />
+        <!-- eslint-enable vue/no-v-html -->
+      </div>
+    </article>
+  </section>
 </template>
 
 <style scoped>
-.success-boxes {
+.preview-notice {
+  position: absolute;
+  top: 3px;
+  right: 8px;
+  color: #666;
+  font-size: 0.6875rem;
+  line-height: 1;
+}
+
+.evaluation-title {
+  box-sizing: border-box;
   display: flex;
-  flex-direction: row;
+  align-items: center;
+  min-height: 56px;
+  margin: 32px 16px 16px;
+  padding: 8px 12px;
+  background-color: #f0f0f0;
+  font-size: 1.5rem;
+  line-height: 1.25;
+  font-weight: 500;
+  color: #333;
+  border-radius: 8px;
+}
+.quantitative-header {
+  justify-content: space-between;
   flex-wrap: wrap;
-  gap: 8px;
-  padding-bottom: 8px;
+  gap: 8px 16px;
+}
+.quantitative-controls {
+  font-size: 1rem;
+  font-weight: 400;
+}
+.quantitative-header h2 {
+  margin: 0;
+  font: inherit;
+}
+.game-title {
+  margin: 0 0 12px;
+  font-size: 1.125rem;
+  line-height: 1.35;
+  font-weight: 600;
+  color: #252b3a;
+}
+.qualitative-evaluation {
+  min-width: 0;
+  margin: 0 16px 24px;
+}
+.evaluation-box {
+  position: relative;
+  box-sizing: border-box;
+  padding: 20px 24px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.markdown :deep(li + li) {
+  margin-top: 8px;
+}
+@media (max-width: 600px) {
+  .evaluation-title {
+    font-size: 1.375rem;
+  }
+  .evaluation-box {
+    padding: 16px;
+  }
+}
+.markdown :deep(p),
+.markdown :deep(ul),
+.markdown :deep(ol),
+.markdown :deep(blockquote),
+.markdown :deep(pre) {
+  margin: 0 0 12px;
+}
+.markdown :deep(h4),
+.markdown :deep(h5),
+.markdown :deep(h6) {
+  font-size: 0.95rem;
+  margin: 16px 0 8px;
+}
+.markdown :deep(img) {
+  max-width: 100%;
+  height: auto;
+}
+.markdown :deep(pre),
+.markdown :deep(table) {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+}
+.markdown > :deep(:last-child) {
+  margin-bottom: 0;
+}
+.data-note {
+  color: #666;
+  font-size: 0.82rem;
+  line-height: 1.35;
+  margin: 4px 16px 16px;
+  max-width: 100%;
 }
 table {
   margin: 0px;
