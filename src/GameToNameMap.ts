@@ -40,6 +40,10 @@ export const gameNameRegistry: Readonly<Record<string, LocalizedGameName>> = {
     en: 'Paper Planes',
     th: 'ลูกบอล, กระดาษ, จรวด'
   },
+  '66501b2e0fa0588e9549e2c280cc1be0': {
+    en: 'Community Beach Challenge',
+    th: 'เกมฝึกแก้ปัญหาสังคม – ชายหาด',
+  },
   'incredible_machine0': {
     en: 'Incredible Machines (tutorial)!',
     th: 'เครื่องจักรมหัศจรรย์ (บทช่วยสอน)!',
